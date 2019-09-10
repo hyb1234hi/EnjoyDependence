@@ -1,0 +1,76 @@
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
+if (project.plugins.hasPlugin("com.android.library")) {
+    task sourcesJar(type: Jar) {
+        classifier = 'sources'
+        from android.sourceSets.main.java.srcDirs
+    }
+} else if (project.plugins.hasPlugin("java")) {
+    task sourcesJar(type: Jar) {
+        classifier = 'sources'
+        from sourceSets.main.java.srcDirs
+    }
+} else if (project.plugins.hasPlugin("groovy")) {
+    task sourcesJar(type: Jar) {
+        classifier = 'sources'
+        from sourceSets.main.groovy.srcDirs
+    }
+}
+
+if (project.tasks['sourcesJar']) {
+    artifacts {
+        archives sourcesJar
+    }
+}
+
+publishing {
+    repositories {
+        mavenLocal()
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            Properties properties = new Properties()
+            InputStream inputStream = project.file('local.properties').newDataInputStream()
+            properties.load(inputStream)
+
+            artifact "${project.buildDir}/libs/${project.name}.jar"
+            groupId  properties.getProperty("sdk_groupId")
+            artifactId properties.getProperty("sdk_artifactId")
+            version properties.getProperty("sdk_version")
+        }
+    }
+}
+
+uploadArchives {
+    repositories {
+        Properties properties = new Properties()
+        InputStream inputStream = project.file('local.properties').newDataInputStream()
+        properties.load(inputStream)
+        def localMaven = Boolean.valueOf(properties.getProperty("localBuild"))
+        mavenDeployer {
+            if (localMaven) {
+                snapshotRepository(url: uri("${rootDir}/.publish"))
+                repository(url: uri("${rootDir}/.publish"))
+            } else {
+                def USERNAME = properties.getProperty("user_name")
+                def PASSWORD = properties.getProperty("user_pwd")
+                if (USERNAME != null && PASSWORD != null) {
+                    snapshotRepository(url: properties.getProperty("SNAPSHOT_REPOSITORY_URL")) {
+                        authentication(userName: USERNAME, password: PASSWORD)
+                    }
+                    repository(url: properties.getProperty("RELEASE_REPOSITORY_URL")) {
+                        authentication(userName: USERNAME, password: PASSWORD)
+                    }
+                }
+            }
+            pom.packaging = 'aar'
+            pom.version = properties.getProperty("sdk_version")
+            pom.groupId = properties.getProperty("sdk_groupId")
+            pom.artifactId = properties.getProperty("sdk_artifactId")
+        }
+    }
+}

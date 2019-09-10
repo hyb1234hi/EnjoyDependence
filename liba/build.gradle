@@ -1,0 +1,65 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+
+
+    defaultConfig {
+        minSdkVersion 22
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+//publishing {
+//    repositories {
+//        mavenLocal()
+//    }
+//
+//    publications {
+//        maven(MavenPublication) {
+//            Properties properties = new Properties()
+//            InputStream inputStream = project.file('local.properties').newDataInputStream()
+//            properties.load(inputStream)
+//
+//            artifact "${project.buildDir}/outputs/aar/${project.name}-release.aar"
+//            groupId  properties.getProperty("sdk_groupId")
+//            artifactId properties.getProperty("sdk_artifactId")
+//            version properties.getProperty("sdk_version")
+//        }
+//    }
+//}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    compileOnly project(path: ':libb')
+}
+
+//dynamicDependency {
+//    Properties properties = new Properties()
+//    InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream()
+//    properties.load(inputStream)
+//
+//    libb {
+//        //如果是true，则使用本地模块作为依赖参与编译，否则使用下面的配置获取远程的构件作为依赖参与编译
+//        debuggable = properties.getProperty("libb") ? false : true
+//        groupId = "com.youzan.mobile.test"
+//        artifactId = "libb" // 默认使用模块的名称作为其值
+//        version = properties.getProperty("libb")
+//    }
+//}

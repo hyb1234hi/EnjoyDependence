@@ -1,0 +1,61 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+
+    defaultConfig {
+        minSdkVersion 22
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+//publishing {
+//    repositories {
+//        mavenLocal()
+//    }
+//
+//    publications {
+//        maven(MavenPublication) {
+//            Properties properties = new Properties()
+//            InputStream inputStream = project.file('local.properties').newDataInputStream()
+//            properties.load(inputStream)
+//
+//            artifact "${project.buildDir}/outputs/aar/${project.name}-release.aar"
+//            groupId  properties.getProperty("sdk_groupId")
+//            artifactId properties.getProperty("sdk_artifactId")
+//            version properties.getProperty("sdk_version")
+//        }
+//    }
+//}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+}
+
+mavenPublish {
+    Properties properties = new Properties()
+    InputStream inputStream = project.file('local.properties').newDataInputStream()
+    properties.load(inputStream)
+
+    version = properties.getProperty("sdk_version") // 如果不包含SNAPSHOT，则发布到release的仓库
+    groupId = properties.getProperty("sdk_groupId")
+    artifactId = properties.getProperty("sdk_artifactId")
+//    userName="your maven repo user's name"
+//    password="your maven repo password"
+//    releaseRepo="your release maven repo address"
+//    snapshotRepo="your snapshot maven repo address"
+}
