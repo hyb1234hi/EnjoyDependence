@@ -30,7 +30,7 @@ class EnjoyMavenPublishPlugin implements Plugin<Project> {
         targetProject.afterEvaluate {
             // 添加上传构件的task，并定义task的依赖关系
             targetProject.uploadArchives {
-                print("publish to remote maven!!!")
+                println("publish to remote maven!!!")
                 repositories {
                     mavenDeployer {
                         beforeDeployment {
@@ -40,7 +40,7 @@ class EnjoyMavenPublishPlugin implements Plugin<Project> {
                             { MavenDeployment deployment -> signing.signPom(deployment) }
                         }
                         pom.groupId = publishExt.groupId
-                        pom.artifactId = getArtifactName(targetProject, publishExt.artifactId)
+                        pom.artifactId = EnjoyMavenPublishPlugin.getArtifactName(targetProject, publishExt.artifactId)
                         pom.version = publishExt.version
 
                         repository(url: publishExt.releaseRepo) {
@@ -51,8 +51,8 @@ class EnjoyMavenPublishPlugin implements Plugin<Project> {
                         }
 
                         pom.project {
-                            name getArtifactName(targetProject, publishExt.artifactId)
-                            packaging getPackageType(targetProject)
+                            name EnjoyMavenPublishPlugin.getArtifactName(targetProject, publishExt.artifactId)
+                            packaging EnjoyMavenPublishPlugin.getPackageType(targetProject)
                         }
                     }
                 }
@@ -84,7 +84,7 @@ class EnjoyMavenPublishPlugin implements Plugin<Project> {
     }
 
     static def getPackageType(Project project) {
-        return isAndroidLibrary(project) ? "aar" : "jar"
+        return EnjoyMavenPublishPlugin.isAndroidLibrary(project) ? "aar" : "jar"
     }
 
     static def isAndroidLibrary(project) {

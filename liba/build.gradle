@@ -53,8 +53,7 @@ dependencies {
 //    version = properties.getProperty("sdk_version") // 如果不包含SNAPSHOT，则发布到release的仓库
 //    groupId = properties.getProperty("sdk_groupId")
 //    artifactId = properties.getProperty("sdk_artifactId")
-//    userName="your maven repo user's name"
-//    password="your maven repo password"
-//    releaseRepo="your release maven repo address"
-//    snapshotRepo="your snapshot maven repo address"
+//    userName="mobile"
+//    password="BlRlkE9W"
+//    snapshotRepo="http://maven.qima-inc.com/content/repositories/snapshots/"
 //}

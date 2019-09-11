@@ -58,7 +58,7 @@ class DependenceResolvePlugin implements Plugin<Project> {
                 resolutionStrategy {
                     dependencySubstitution {
                         resolveExtMap.each { key, value ->
-                            println("start replace aar" + key + "  " + value)
+                            println("start replace aar " + key + "  " + value)
                             substitute project("${key.path}") with module("${value.groupId}:${getArtifactName(key, value.artifactId)}:${value.version}")
                         }
                     }

@@ -4,5 +4,5 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.youzan.mobile.gradle.plugin</groupId>
   <artifactId>enjoydependence</artifactId>
-  <version>1.0.3-SNAPSHOT</version>
+  <version>1.0.3-local-SNAPSHOT</version>
 </project>
