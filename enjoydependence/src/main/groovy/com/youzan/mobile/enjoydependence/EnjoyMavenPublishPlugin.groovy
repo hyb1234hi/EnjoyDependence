@@ -1,5 +1,6 @@
 package com.youzan.mobile.enjoydependence
 
+import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.maven.MavenDeployment
@@ -56,6 +57,11 @@ class EnjoyMavenPublishPlugin implements Plugin<Project> {
                         }
                     }
                 }
+            }
+
+            targetProject.artifacts {
+                println("我执行了")
+//                archives androidSourcesJar
             }
 
             targetProject.publishing {

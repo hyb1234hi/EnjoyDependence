@@ -1,1 +1,1 @@
-include ':app', ':enjoydependence', ':liba', ':libb'
+include ':app', ':enjoydependence', 'modules:liba', 'modules:libb'
