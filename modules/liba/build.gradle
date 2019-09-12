@@ -80,6 +80,5 @@ mavenPublish {
     artifactId = properties.getProperty("sdk_artifactId")
     userName="mobile"
     password="BlRlkE9W"
-    desc="我是一个库"
     snapshotRepo="http://maven.qima-inc.com/content/repositories/snapshots/"
 }
