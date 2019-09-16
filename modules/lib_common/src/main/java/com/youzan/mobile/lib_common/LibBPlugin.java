@@ -1,4 +1,5 @@
 package com.youzan.mobile.lib_common;
 
-public class LibBPlugin {
+public abstract class LibBPlugin implements IPlugin {
+    public abstract void say();
 }

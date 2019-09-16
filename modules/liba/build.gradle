@@ -52,33 +52,32 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
-    compileOnly project(path: ':modules:libb')
+    implementation project(path: ':modules:lib_common')
 }
 
-//dynamicDependency {
-//    Properties properties = new Properties()
-//    InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream()
-//    properties.load(inputStream)
-//
-//    libb {
-//        //如果是true，则使用本地模块作为依赖参与编译，否则使用下面的配置获取远程的构件作为依赖参与编译
-//        debuggable = properties.getProperty("libb") ? false : true
-//        groupId = "com.youzan.mobile.test"
-//        artifactId = "libb" // 默认使用模块的名称作为其值
-//        version = properties.getProperty("libb")
-//    }
-//}
+dynamicDependency {
+    Properties properties = new Properties()
+    InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream()
+    properties.load(inputStream)
 
-//mavenPublish {
-//    Properties properties = new Properties()
-//    InputStream inputStream = project.file('local.properties').newDataInputStream()
-//    properties.load(inputStream)
-//
-//    localPublish = false
-//    version = properties.getProperty("sdk_version") // 如果不包含SNAPSHOT，则发布到release的仓库
-//    groupId = properties.getProperty("sdk_groupId")
-//    artifactId = properties.getProperty("sdk_artifactId")
-//    userName="mobile"
-//    password="BlRlkE9W"
-//    snapshotRepo="http://maven.qima-inc.com/content/repositories/snapshots/"
-//}
+    lib_common {
+        //如果是true，则使用本地模块作为依赖参与编译，否则使用下面的配置获取远程的构件作为依赖参与编译
+        debuggable = properties.getProperty("lib_common") ? false : true
+        groupId = "com.youzan.mobile"
+        artifactId = "lib_common" // 默认使用模块的名称作为其值
+        version = properties.getProperty("lib_common")
+    }
+}
+
+mavenPublish {
+    Properties properties = new Properties()
+    InputStream inputStream = project.file('local.properties').newDataInputStream()
+    properties.load(inputStream)
+
+    version = properties.getProperty("sdk_version") // 如果不包含SNAPSHOT，则发布到release的仓库
+    groupId = properties.getProperty("sdk_groupId")
+    artifactId = properties.getProperty("sdk_artifactId")
+    userName="mobile"
+    password="BlRlkE9W"
+    snapshotRepo="http://maven.qima-inc.com/content/repositories/snapshots/"
+}

@@ -1,4 +1,4 @@
-package com.youzan.mobile.lib_comon;
+package com.youzan.mobile.lib_common;
 
 import org.junit.Test;
 

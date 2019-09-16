@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/enjoydependence" />
             <option value="$PROJECT_DIR$/modules" />
+            <option value="$PROJECT_DIR$/modules/lib_common" />
             <option value="$PROJECT_DIR$/modules/liba" />
             <option value="$PROJECT_DIR$/modules/libb" />
           </set>

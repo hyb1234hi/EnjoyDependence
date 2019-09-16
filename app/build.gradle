@@ -28,26 +28,33 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation project(path: ':modules:liba')
     implementation project(path: ':modules:libb')
+    implementation project(path: ':modules:lib_common')
 }
 
-//dynamicDependency {
-//    Properties properties = new Properties()
-//    InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream()
-//    properties.load(inputStream)
-//
-//    //这个key对应的是本地模块的名称（注意这个本地模块应该在依赖当中有配置,如上所示）
-//    liba {
-//        //如果是true，则使用本地模块作为依赖参与编译，否则使用下面的配置获取远程的构件作为依赖参与编译
-//        debuggable = properties.getProperty("liba") ? false : true
-//        groupId = "com.youzan.mobile.test"
-//        artifactId = "liba" // 默认使用模块的名称作为其值
-//        version = properties.getProperty("liba")
-//    }
-//    libb {
-//        //如果是true，则使用本地模块作为依赖参与编译，否则使用下面的配置获取远程的构件作为依赖参与编译
-//        debuggable = properties.getProperty("libb") ? false : true
-//        groupId = "com.youzan.mobile.test"
-//        artifactId = "libb" // 默认使用模块的名称作为其值
-//        version = properties.getProperty("libb")
-//    }
-//}
+dynamicDependency {
+    Properties properties = new Properties()
+    InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream()
+    properties.load(inputStream)
+
+    lib_common {
+        //如果是true，则使用本地模块作为依赖参与编译，否则使用下面的配置获取远程的构件作为依赖参与编译
+        debuggable = properties.getProperty("lib_common") ? false : true
+        groupId = "com.youzan.mobile"
+        artifactId = "lib_common" // 默认使用模块的名称作为其值
+        version = properties.getProperty("lib_common")
+    }
+    liba {
+        //如果是true，则使用本地模块作为依赖参与编译，否则使用下面的配置获取远程的构件作为依赖参与编译
+        debuggable = properties.getProperty("liba") ? false : true
+        groupId = "com.youzan.mobile"
+        artifactId = "liba" // 默认使用模块的名称作为其值
+        version = properties.getProperty("liba")
+    }
+    libb {
+        //如果是true，则使用本地模块作为依赖参与编译，否则使用下面的配置获取远程的构件作为依赖参与编译
+        debuggable = properties.getProperty("libb") ? false : true
+        groupId = "com.youzan.mobile"
+        artifactId = "libb" // 默认使用模块的名称作为其值
+        version = properties.getProperty("libb")
+    }
+}
