@@ -34,6 +34,12 @@ class EnjoyMavenPublishPlugin implements Plugin<Project> {
                 return
             }
 
+            def projectName = targetProject.name
+            def flavor = publishExt.flavor
+            if (flavor != null) {
+                projectName = projectName + "-" + flavor
+            }
+
             if (publishExt.localPublish) {
                 println("publish to local maven")
                 targetProject.publishing {
@@ -44,7 +50,7 @@ class EnjoyMavenPublishPlugin implements Plugin<Project> {
                     publications {
                         maven(MavenPublication) {
 //                            artifact "${targetProject.buildDir}/libs/${targetProject.name}-sources.jar"
-                            artifact "${targetProject.buildDir}/outputs/aar/${targetProject.name}-${publishExt.flavor}-release.aar"
+                            artifact "${targetProject.buildDir}/outputs/aar/${projectName}-release.aar"
                             groupId publishExt.groupId
                             artifactId getArtifactName(targetProject, publishExt.artifactId)
                             version publishExt.version
@@ -82,7 +88,7 @@ class EnjoyMavenPublishPlugin implements Plugin<Project> {
                             artifactId artifactIdTemp
                             version versionTemp
 //                            artifact "${targetProject.buildDir}/libs/${targetProject.name}-sources.jar"
-                            artifact "${targetProject.buildDir}/outputs/aar/${targetProject.name}-${publishExt.flavor}-release.aar"
+                            artifact "${targetProject.buildDir}/outputs/aar/${projectName}-release.aar"
                         }
                     }
                 }
