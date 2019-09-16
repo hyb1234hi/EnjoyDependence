@@ -43,7 +43,7 @@ class EnjoyMavenPublishPlugin implements Plugin<Project> {
 
                     publications {
                         maven(MavenPublication) {
-                            artifact "${targetProject.buildDir}/libs/${targetProject.name}-sources.jar"
+//                            artifact "${targetProject.buildDir}/libs/${targetProject.name}-sources.jar"
                             artifact "${targetProject.buildDir}/outputs/aar/${targetProject.name}-${publishExt.flavor}-release.aar"
                             groupId publishExt.groupId
                             artifactId getArtifactName(targetProject, publishExt.artifactId)
@@ -81,7 +81,7 @@ class EnjoyMavenPublishPlugin implements Plugin<Project> {
                             groupId groupIdTemp
                             artifactId artifactIdTemp
                             version versionTemp
-                            artifact "${targetProject.buildDir}/libs/${targetProject.name}-sources.jar"
+//                            artifact "${targetProject.buildDir}/libs/${targetProject.name}-sources.jar"
                             artifact "${targetProject.buildDir}/outputs/aar/${targetProject.name}-${publishExt.flavor}-release.aar"
                         }
                     }
