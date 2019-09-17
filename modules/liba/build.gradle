@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply from: '../../dynamic.gradle'
 
 if (project.plugins.hasPlugin("com.android.library")) {
     task sourcesJar(type: Jar) {
@@ -23,17 +24,15 @@ if (project.tasks['sourcesJar']) {
     }
 }
 
-
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.2"
-
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 22
-        targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode rootProject.ext.android.versionCode
+        versionName rootProject.ext.android.versionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -53,20 +52,6 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation project(path: ':modules:lib_common')
-}
-
-dynamicDependency {
-    Properties properties = new Properties()
-    InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream()
-    properties.load(inputStream)
-
-    lib_common {
-        //如果是true，则使用本地模块作为依赖参与编译，否则使用下面的配置获取远程的构件作为依赖参与编译
-        debuggable = properties.getProperty("lib_common") ? false : true
-        groupId = "com.youzan.mobile"
-        artifactId = "lib_common" // 默认使用模块的名称作为其值
-        version = properties.getProperty("lib_common")
-    }
 }
 
 mavenPublish {
