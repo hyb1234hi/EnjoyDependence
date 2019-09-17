@@ -3,10 +3,12 @@ package com.youzan.mobile.enjoydependence
 import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.artifacts.maven.MavenDeployment
 import org.gradle.api.plugins.MavenPlugin
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
+import org.gradle.api.tasks.bundling.AbstractArchiveTask
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.internal.impldep.org.apache.maven.Maven
 import org.gradle.plugins.signing.SigningPlugin
@@ -49,11 +51,18 @@ class EnjoyMavenPublishPlugin implements Plugin<Project> {
 
                     publications {
                         maven(MavenPublication) {
-//                            artifact "${targetProject.buildDir}/libs/${targetProject.name}-sources.jar"
                             artifact "${targetProject.buildDir}/outputs/aar/${projectName}-release.aar"
                             groupId publishExt.groupId
                             artifactId getArtifactName(targetProject, publishExt.artifactId)
                             version publishExt.version
+                            if (targetProject.getTasks().findByName("sourcesJar")) {
+                                if (targetProject.getTasks().findByName("sourcesJar") instanceof AbstractArchiveTask) {
+                                    def task = targetProject.getTasks().findByName("sourcesJar") as AbstractArchiveTask
+                                    artifact(task.getArchivePath().path) {
+                                        classifier = 'sources'
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -87,8 +96,15 @@ class EnjoyMavenPublishPlugin implements Plugin<Project> {
                             groupId groupIdTemp
                             artifactId artifactIdTemp
                             version versionTemp
-//                            artifact "${targetProject.buildDir}/libs/${targetProject.name}-sources.jar"
                             artifact "${targetProject.buildDir}/outputs/aar/${projectName}-release.aar"
+                            if (targetProject.getTasks().findByName("sourcesJar")) {
+                                if (targetProject.getTasks().findByName("sourcesJar") instanceof AbstractArchiveTask) {
+                                    def task = targetProject.getTasks().findByName("sourcesJar") as AbstractArchiveTask
+                                    artifact(task.getArchivePath().path) {
+                                        classifier = 'sources'
+                                    }
+                                }
+                            }
                         }
                     }
                 }
