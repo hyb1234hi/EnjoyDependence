@@ -52,15 +52,19 @@ class DependenceResolvePlugin implements Plugin<Project> {
                         }
                     }
                 }
+                println("targetProjectName:" + targetProject.getName() + "; resolveExtMap Size:" + resolveExtMap.size())
             }
             //已配置依赖为主，不涉及module的卸载
-            targetProject.configurations.all {
-                resolutionStrategy {
-                    dependencySubstitution {
-                        resolveExtMap.each { key, value ->
-                            println("start replace aar " + key + "  " + value)
-                            println("groupId: ${value.groupId}; artifactName:${value.artifactId}; version:${value.version}")
-                            substitute project("${key.path}") with module("${value.groupId}:${getArtifactName(key, value.artifactId)}:${value.version}")
+            println("${targetProject.getName()} configurations size :" +  targetProject.configurations.size())
+            targetProject.configurations.all { Configuration configuration ->
+                println("configuration:" + configuration.getName())
+                if (!configuration.getName().contains("Test") && !configuration.getName().contains("test")) {
+                    resolutionStrategy {
+                        dependencySubstitution {
+                            resolveExtMap.each { key, value ->
+                                println("start replace ${key} with aar: groupId: ${value.groupId}; artifactName:${value.artifactId}; version:${value.version}")
+                                substitute project("${key.path}") with module("${value.groupId}:${getArtifactName(key, value.artifactId)}:${value.version}")
+                            }
                         }
                     }
                 }
