@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply from: '../dynamic.gradle'
 
 def config = rootProject.ext.android
 
@@ -30,6 +31,10 @@ dependencies {
     implementation project(path: ':modules:lib_common')
 }
 
-apply from: '../dynamic.gradle'
+taskExecTime {
+    enable true
+}
+
+
 
 

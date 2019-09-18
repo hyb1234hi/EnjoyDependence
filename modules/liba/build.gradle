@@ -54,16 +54,16 @@ dependencies {
     implementation project(path: ':modules:lib_common')
 }
 
-mavenPublish {
-    Properties properties = new Properties()
-    InputStream inputStream = project.file('local.properties').newDataInputStream()
-    properties.load(inputStream)
-
-    localPublish = true
-    version = properties.getProperty("sdk_version") // 如果不包含SNAPSHOT，则发布到release的仓库
-    groupId = properties.getProperty("sdk_groupId")
-    artifactId = properties.getProperty("sdk_artifactId")
-    userName="mobile"
-    password="BlRlkE9W"
-    snapshotRepo="http://maven.qima-inc.com/content/repositories/snapshots/"
-}
+//mavenPublish {
+//    Properties properties = new Properties()
+//    InputStream inputStream = project.file('local.properties').newDataInputStream()
+//    properties.load(inputStream)
+//
+//    localPublish = true
+//    version = properties.getProperty("sdk_version") // 如果不包含SNAPSHOT，则发布到release的仓库
+//    groupId = properties.getProperty("sdk_groupId")
+//    artifactId = properties.getProperty("sdk_artifactId")
+//    userName="mobile"
+//    password="BlRlkE9W"
+//    snapshotRepo="http://maven.qima-inc.com/content/repositories/snapshots/"
+//}
