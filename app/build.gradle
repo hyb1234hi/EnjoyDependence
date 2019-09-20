@@ -31,12 +31,13 @@ dependencies {
     implementation project(path: ':modules:lib_common')
 }
 
-taskExecTime {
-    enable true
-}
-
+//taskExecTime {
+//    enable true
+//}
+//
 autoPublish {
-    command = "AutoPublish"
+    command = "build"
+    excludeModules = ["app", "enjoydependence", "modules", "liba", "libb", "lib_common"]
 }
 
 //task("installApk") {

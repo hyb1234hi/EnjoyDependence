@@ -6,4 +6,5 @@ package com.youzan.mobile.enjoydependence.auto
 class AutoPublishExt {
     String command = "assemble"//统一调用的gradle命令
     String dependsOn = "build"//依赖任务
+    String[] excludeModules = ["app", "enjoydependence", "modules"]//autopublishall 排除的module
 }

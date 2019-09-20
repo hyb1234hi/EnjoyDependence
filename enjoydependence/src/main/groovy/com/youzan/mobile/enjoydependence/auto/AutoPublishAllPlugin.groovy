@@ -17,7 +17,7 @@ class AutoPublishAllPlugin implements Plugin<Project> {
         Map<String, Project> projectMap = new HashMap<String, Project>()
         project.afterEvaluate {
             project.rootProject.subprojects.each { pro ->
-                if (pro.name != "app" && pro.name != "enjoydependence" && pro.name != "modules") {
+                if (!autoPublishExt.excludeModules.contains(pro.name)) {
                     projectMap.put(pro.name, pro)
                 }
             }

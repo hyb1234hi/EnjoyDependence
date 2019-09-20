@@ -21,6 +21,6 @@ class AutoPublishAllTask extends DefaultTask {
 
     @Override
     String getDescription() {
-        return "publish all module aar to maven"
+        return "auto execute the same job"
     }
 }
