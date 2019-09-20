@@ -1,5 +1,6 @@
 package com.youzan.mobile.enjoydependence
 
+import com.youzan.mobile.enjoydependence.auto.AutoPublishAllPlugin
 import com.youzan.mobile.enjoydependence.auto.AutoPublishPlugin
 import com.youzan.mobile.enjoydependence.build.BuildTimeCostPlugin
 import org.gradle.api.Plugin
@@ -17,7 +18,8 @@ class EnjoyDependencePlugin implements Plugin<Project> {
             it.plugins.apply(EnjoyMavenPublishPlugin)
             it.plugins.apply(DependenceResolvePlugin)
             it.plugins.apply(BuildTimeCostPlugin)
-            it.plugins.apply(AutoPublishPlugin)
+//            it.plugins.apply(AutoPublishPlugin)
+            it.plugins.apply(AutoPublishAllPlugin)
         }
     }
 }

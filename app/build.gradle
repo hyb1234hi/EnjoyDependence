@@ -35,6 +35,30 @@ dependencies {
 //    enable true
 //}
 
+//task("installApk") {
+//    doLast {
+//        //具体需要apk路径
+//        def path = rootDir.getAbsolutePath() + "/outputApk/debug/app-debug.apk"
+//
+//        //adb instal 命令
+//        def command = "../gradlew :modules:lib_common:assembleDebug"
+//
+//        try {
+//            //调用 exec 方法执行这个命令
+//            exec {
+//                ExecSpec execSpec ->
+//                    //配置闭包的内容
+//                    executable 'bash'
+//                    args '-c', command
+//            }
+//            //执行完之后，打印一句话
+//            println "installApk install success"
+//        } catch (Exception e) {
+//
+//        }
+//    }
+//}
+
 
 
 
