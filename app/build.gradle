@@ -31,9 +31,13 @@ dependencies {
     implementation project(path: ':modules:lib_common')
 }
 
-//taskExecTime {
-//    enable true
-//}
+taskExecTime {
+    enable true
+}
+
+autoPublish {
+    command = "AutoPublish"
+}
 
 //task("installApk") {
 //    doLast {

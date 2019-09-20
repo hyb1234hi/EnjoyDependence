@@ -12,6 +12,10 @@ class AutoPublishPlugin implements Plugin<Project> {
     @Override
     void apply(Project project) {
 
+        if (project.name == "app" || project.name == "modules" || project.name == "enjoydependence") {
+            return
+        }
+
         AutoPublishExt autoPublishExt = project.extensions.create("autoPublish", AutoPublishExt)
 
         project.afterEvaluate {

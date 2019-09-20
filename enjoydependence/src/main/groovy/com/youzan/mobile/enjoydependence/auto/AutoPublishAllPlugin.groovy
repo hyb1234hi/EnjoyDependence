@@ -24,7 +24,7 @@ class AutoPublishAllPlugin implements Plugin<Project> {
 
             project.getTasks().create("AutoPublishAll", AutoPublishAllTask.class).doLast {
                 projectMap.each {key, value ->
-                    def command = "../gradlew :modules:${key}:${autoPublishExt.dependsOn} -x lint --daemon"
+                    def command = "../gradlew :modules:${key}:${autoPublishExt.command} -x lint --daemon"
                     project.exec { execSpec ->
                         //配置闭包的内容
                         executable 'bash'
