@@ -36,21 +36,21 @@ class WriteVersionTask extends DefaultTask {
                 }
             }
 
-            def versions = []
+            def oldVersion = []
             File rootVersionFile = new File(project.rootProject.projectDir.absolutePath + "/" + "version.properties")
             if (rootVersionFile.exists()) {
                 rootVersionFile.withReader('UTF-8') { reader ->
                     reader.eachLine {
                         if (it.contains(project.name)) {
-                            it = "${project.name}=${defaultVersion}"
-                            versions.add(it + "\n")
+                            oldVersion.add(it)
                         }
                     }
                 }
-                rootVersionFile.withWriter('UTF-8') { writer ->
-                    versions.each {
-                        writer.write(it)
-                    }
+
+                oldVersion.each {
+                    String fileText = rootVersionFile.text
+                    String newVersions = fileText.replaceAll(it, "${project.name}=${defaultVersion}")
+                    rootVersionFile.write(newVersions)
                 }
             }
         }
