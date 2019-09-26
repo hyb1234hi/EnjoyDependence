@@ -35,10 +35,10 @@ dependencies {
 //    enable true
 //}
 //
-autoPublish {
-    command = "build"
-    excludeModules = ["app", "enjoydependence", "modules", "liba", "libb", "lib_common"]
-}
+//autoPublish {
+//    command = "build"
+//    excludeModules = ["app", "enjoydependence", "modules", "liba", "libb", "lib_common"]
+//}
 
 //task("installApk") {
 //    doLast {
