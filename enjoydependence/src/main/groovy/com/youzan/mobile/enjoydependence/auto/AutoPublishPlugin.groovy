@@ -5,7 +5,8 @@ import org.gradle.api.Project
 
 
 /**
- * 自动发布
+ * 自动发布单个lib
+ * 依赖WriteVersion、autoPublishExt.dependsOn、publish
  */
 class AutoPublishPlugin implements Plugin<Project> {
 
@@ -22,7 +23,9 @@ class AutoPublishPlugin implements Plugin<Project> {
             if (project.getTasks().findByName("publish") && project.getTasks().find {
                 autoPublishExt.dependsOn
             }) {
-                project.getTasks().create("AutoPublish", AutoPublishTask.class).dependsOn(autoPublishExt.dependsOn)
+                project.getTasks().create("WriteVersion", WriteVersionTask.class)
+                project.getTasks().create("AutoPublish", AutoPublishTask.class).dependsOn([autoPublishExt.dependsOn, "WriteVersion"])
+                project.getTasks().find { autoPublishExt.dependsOn }.mustRunAfter("WriteVersion")
                 project.getTasks().find { autoPublishExt.dependsOn }.finalizedBy("publish")
             }
         }

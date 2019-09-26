@@ -13,6 +13,7 @@ class AutoPublishAllPlugin implements Plugin<Project> {
         if (project.name != "app") {
             return
         }
+        def defaultVersion = project.hasProperty("version") ? project.version : ""
         AutoPublishExt autoPublishExt = project.extensions.create("autoPublish", AutoPublishExt)
         Map<String, Project> projectMap = new HashMap<String, Project>()
         project.afterEvaluate {
@@ -23,8 +24,12 @@ class AutoPublishAllPlugin implements Plugin<Project> {
             }
 
             project.getTasks().create("AutoPublishAll", AutoPublishAllTask.class).doLast {
-                projectMap.each {key, value ->
+                projectMap.each { key, value ->
+                    println("---------------AutoBuild ${key}----------------")
                     def command = "../gradlew :modules:${key}:${autoPublishExt.command} -x lint --daemon"
+                    if (defaultVersion != "") {
+                        command = "../gradlew :modules:${key}:${autoPublishExt.command} -Pversion=${defaultVersion} -x lint --daemon"
+                    }
                     project.exec { execSpec ->
                         //配置闭包的内容
                         executable 'bash'
