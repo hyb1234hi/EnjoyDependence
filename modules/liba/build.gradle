@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: '../../dynamic.gradle'
+//apply from: '../../dynamic.gradle'
 
 if (project.plugins.hasPlugin("com.android.library")) {
     task sourcesJar(type: Jar) {

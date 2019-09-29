@@ -1,6 +1,6 @@
 //dynamicDependency {
 //    Properties properties = new Properties()
-//    InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream()
+//    InputStream inputStream = project.rootProject.file('version.properties').newDataInputStream()
 //    properties.load(inputStream)
 //
 //    lib_common {
@@ -25,7 +25,7 @@
 //        version = properties.getProperty("libb")
 //    }
 //}
-
+//
 //taskExecTime {
 //    threshold 100
 //    sorted true

@@ -28,6 +28,9 @@ class EnjoyMavenPublishPlugin implements Plugin<Project> {
 
         // add the needed plugin
         targetProject.plugins.apply(MavenPublishPlugin)
+        targetProject.getTasks().find {"publish"}.doLast {
+            println("-----------------auto publish finish-------------------")
+        }
 
         MavenPublishExt publishExt = targetProject.extensions.create("mavenPublish", MavenPublishExt)
 

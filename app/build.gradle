@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply from: '../dynamic.gradle'
+//apply from: '../dynamic.gradle'
 
 def config = rootProject.ext.android
 
@@ -31,14 +31,10 @@ dependencies {
     implementation project(path: ':modules:lib_common')
 }
 
-//taskExecTime {
-//    enable true
+//autoPublish {
+//    command = "AutoPublish"
+//    excludeModules = ["app", "enjoydependence", "modules"]
 //}
-
-autoPublish {
-    command = "AutoPublish"
-    excludeModules = ["app", "enjoydependence", "modules", "libb", "lib_common"]
-}
 
 
 

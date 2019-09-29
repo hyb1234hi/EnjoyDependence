@@ -34,6 +34,23 @@ class WriteVersionTask extends DefaultTask {
                         writer.write(it)
                     }
                 }
+            } else {
+                file.createNewFile()
+                if (file.exists()) {
+                    file.withReader('UTF-8') { reader ->
+                        reader.eachLine {
+                            if (it.contains("versionName")) {
+                                it = "versionName=${defaultVersion}"
+                                list.add(it + "\n")
+                            }
+                        }
+                    }
+                    file.withWriter('UTF-8') { writer ->
+                        list.each {
+                            writer.write(it)
+                        }
+                    }
+                }
             }
 
             def oldVersion = []
@@ -52,6 +69,24 @@ class WriteVersionTask extends DefaultTask {
                     String newVersions = fileText.replaceAll(it, "${project.name}=${defaultVersion}")
                     rootVersionFile.write(newVersions)
                 }
+            } else {
+                rootVersionFile.createNewFile()
+                if (rootVersionFile.exists()) {
+                    rootVersionFile.withReader('UTF-8') { reader ->
+                        reader.eachLine {
+                            if (it.contains(project.name)) {
+                                oldVersion.add(it)
+                            }
+                        }
+                    }
+
+                    oldVersion.each {
+                        String fileText = rootVersionFile.text
+                        String newVersions = fileText.replaceAll(it, "${project.name}=${defaultVersion}")
+                        rootVersionFile.write(newVersions)
+                    }
+                }
+
             }
         }
     }

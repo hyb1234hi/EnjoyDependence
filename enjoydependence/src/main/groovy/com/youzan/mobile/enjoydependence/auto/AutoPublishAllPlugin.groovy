@@ -5,6 +5,7 @@ import org.gradle.api.Project
 
 /**
  * 发布所有lib
+ * 按照优先级发布
  */
 class AutoPublishAllPlugin implements Plugin<Project> {
 
@@ -25,15 +26,45 @@ class AutoPublishAllPlugin implements Plugin<Project> {
 
             project.getTasks().create("AutoPublishAll", AutoPublishAllTask.class).doLast {
                 projectMap.each { key, value ->
-                    println("---------------AutoBuild ${key}----------------")
-                    def command = "../gradlew :modules:${key}:${autoPublishExt.command} -x lint --daemon"
-                    if (defaultVersion != "") {
-                        command = "../gradlew :modules:${key}:${autoPublishExt.command} -Pversion=${defaultVersion} -x lint --daemon"
+                    if (autoPublishExt.firstPriority.contains(key)) {
+                        println("---------------AutoBuild FirstPriority ${key}----------------")
+                        def command = "../gradlew :modules:${key}:${autoPublishExt.command} -x lint --daemon"
+                        if (defaultVersion != "") {
+                            command = "../gradlew :modules:${key}:${autoPublishExt.command} -Pversion=${defaultVersion} -x lint --daemon"
+                        }
+                        project.exec { execSpec ->
+                            //配置闭包的内容
+                            executable 'bash'
+                            args '-c', command
+                        }
                     }
-                    project.exec { execSpec ->
-                        //配置闭包的内容
-                        executable 'bash'
-                        args '-c', command
+                }
+                projectMap.each { key, value ->
+                    if (autoPublishExt.secondPriority.contains(key)) {
+                        println("---------------AutoBuild SecondPriority ${key}----------------")
+                        def command = "../gradlew :modules:${key}:${autoPublishExt.command} -x lint --daemon"
+                        if (defaultVersion != "") {
+                            command = "../gradlew :modules:${key}:${autoPublishExt.command} -Pversion=${defaultVersion} -x lint --daemon"
+                        }
+                        project.exec { execSpec ->
+                            //配置闭包的内容
+                            executable 'bash'
+                            args '-c', command
+                        }
+                    }
+                }
+                projectMap.each { key, value ->
+                    println("---------------AutoBuild FirstPriority ${key}----------------")
+                    if (!autoPublishExt.firstPriority.contains(key) && !autoPublishExt.secondPriority.contains(key)) {
+                        def command = "../gradlew :modules:${key}:${autoPublishExt.command} -x lint --daemon"
+                        if (defaultVersion != "") {
+                            command = "../gradlew :modules:${key}:${autoPublishExt.command} -Pversion=${defaultVersion} -x lint --daemon"
+                        }
+                        project.exec { execSpec ->
+                            //配置闭包的内容
+                            executable 'bash'
+                            args '-c', command
+                        }
                     }
                 }
             }.doFirst {

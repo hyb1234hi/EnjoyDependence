@@ -1,7 +1,14 @@
 package com.youzan.mobile.enjoydependence.auto
 
+import com.youzan.mobile.enjoydependence.DependenceResolveExt
+import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
+import org.gradle.api.artifacts.Configuration
+import org.gradle.api.execution.TaskExecutionListener
+import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency
+import org.gradle.api.tasks.TaskState
 
 
 /**
@@ -23,10 +30,23 @@ class AutoPublishPlugin implements Plugin<Project> {
             if (project.getTasks().findByName("publish") && project.getTasks().find {
                 autoPublishExt.dependsOn
             }) {
-                project.getTasks().create("WriteVersion", WriteVersionTask.class)
-                project.getTasks().create("AutoPublish", AutoPublishTask.class).dependsOn([autoPublishExt.dependsOn, "WriteVersion"])
-                project.getTasks().find { autoPublishExt.dependsOn }.mustRunAfter("WriteVersion")
-                project.getTasks().find { autoPublishExt.dependsOn }.finalizedBy("publish")
+                project.getTasks().create("WriteVersion", WriteVersionTask.class).dependsOn([autoPublishExt.dependsOn])
+                project.getTasks().create("AutoPublish", AutoPublishTask.class).dependsOn(["WriteVersion"])
+                project.getTasks().find { "WriteVersion" }.finalizedBy("publish")
+
+                project.getGradle().addListener(new TaskExecutionListener() {
+                    @Override
+                    void beforeExecute(Task task) {
+
+                    }
+
+                    @Override
+                    void afterExecute(Task task, TaskState taskState) {
+                        if (task.name == autoPublishExt.dependsOn && task.state.getFailure() != null) {
+                            taskState.rethrowFailure()
+                        }
+                    }
+                })
             }
         }
     }

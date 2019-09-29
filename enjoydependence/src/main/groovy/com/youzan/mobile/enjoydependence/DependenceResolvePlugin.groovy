@@ -57,7 +57,7 @@ class DependenceResolvePlugin implements Plugin<Project> {
             //已配置依赖为主，不涉及module的卸载
             println("${targetProject.getName()} configurations size :" +  targetProject.configurations.size())
             targetProject.configurations.all { Configuration configuration ->
-                println("configuration:" + configuration.getName())
+//                println("configuration:" + configuration.getName())
                 if (!configuration.getName().contains("Test") && !configuration.getName().contains("test")) {
                     resolutionStrategy {
                         dependencySubstitution {

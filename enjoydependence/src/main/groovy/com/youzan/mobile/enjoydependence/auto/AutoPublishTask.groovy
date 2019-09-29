@@ -7,7 +7,6 @@ class AutoPublishTask extends DefaultTask {
 
     @TaskAction
     void autoPublish() {
-        println("-----------------auto publish finish-------------------")
     }
 
     @Override
