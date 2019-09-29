@@ -28,4 +28,4 @@ allprojects {
         google()
     }
 }
-apply plugin: 'enjoy-dependence'
+//apply plugin: 'enjoy-dependence'
