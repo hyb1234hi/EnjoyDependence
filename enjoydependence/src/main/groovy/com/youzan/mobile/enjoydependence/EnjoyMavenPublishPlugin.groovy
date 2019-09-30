@@ -1,17 +1,12 @@
 package com.youzan.mobile.enjoydependence
 
-import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.Task
-import org.gradle.api.artifacts.maven.MavenDeployment
-import org.gradle.api.plugins.MavenPlugin
+import org.gradle.api.artifacts.ExcludeRule
+import org.gradle.api.artifacts.ModuleDependency
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
 import org.gradle.api.tasks.bundling.AbstractArchiveTask
-import org.gradle.api.tasks.bundling.Jar
-import org.gradle.internal.impldep.org.apache.maven.Maven
-import org.gradle.plugins.signing.SigningPlugin
 
 /**
  * a plugin use to uploadArchives
@@ -39,6 +34,12 @@ class EnjoyMavenPublishPlugin implements Plugin<Project> {
                 return
             }
 
+            String defaultVersion = ""
+            Map<String, Project> projectMap = new HashMap<String, Project>()
+            targetProject.rootProject.subprojects.each { pro ->
+                projectMap.put(pro.name, pro)
+            }
+
             def projectName = targetProject.name
             def flavor = publishExt.flavor
             if (flavor != null) {
@@ -54,10 +55,11 @@ class EnjoyMavenPublishPlugin implements Plugin<Project> {
 
                     publications {
                         maven(MavenPublication) {
+                            defaultVersion = targetProject.hasProperty("version") ? targetProject.version : publishExt.version
                             artifact "${targetProject.buildDir}/outputs/aar/${projectName}-release.aar"
                             groupId publishExt.groupId
                             artifactId getArtifactName(targetProject, publishExt.artifactId)
-                            version publishExt.version
+                            version defaultVersion
                             if (targetProject.getTasks().findByName("sourcesJar")) {
                                 if (targetProject.getTasks().findByName("sourcesJar") instanceof AbstractArchiveTask) {
                                     def task = targetProject.getTasks().findByName("sourcesJar") as AbstractArchiveTask
@@ -66,14 +68,37 @@ class EnjoyMavenPublishPlugin implements Plugin<Project> {
                                     }
                                 }
                             }
+                            pom.withXml {
+                                def dependenciesNode = asNode().appendNode('dependencies')
+                                targetProject.configurations.implementation.allDependencies.withType(ModuleDependency) { ModuleDependency dp ->
+                                    println("dependencies ${dp.name} ${dp.version}")
+                                    if (dp.version != "unspecified" && !projectMap.containsKey(dp.name)) { // 过滤项目内library引用
+                                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                                        dependencyNode.appendNode('groupId', dp.group)
+                                        dependencyNode.appendNode('artifactId', dp.name)
+                                        dependencyNode.appendNode('version', dp.version)
+
+                                        // for exclusions
+                                        if (dp.excludeRules.size() > 0) {
+                                            def exclusions = dependencyNode.appendNode('exclusions')
+                                            dp.excludeRules.each { ExcludeRule ex ->
+                                                def exclusion = exclusions.appendNode('exclusion')
+                                                exclusion.appendNode('groupId', ex.group)
+                                                exclusion.appendNode('artifactId', ex.module)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             } else {
                 println("publish to remote maven")
+                defaultVersion = targetProject.hasProperty("version") ? targetProject.version : publishExt.version
                 String usernameTemp = publishExt.userName
                 String pwd = publishExt.password
-                String versionTemp = publishExt.version
+                String versionTemp = defaultVersion
                 String artifactIdTemp = publishExt.artifactId
                 String groupIdTemp = publishExt.groupId
                 String urlPath
