@@ -2,6 +2,7 @@ package com.youzan.mobile.enjoydependence
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ExcludeRule
 import org.gradle.api.artifacts.ModuleDependency
 import org.gradle.api.publish.maven.MavenPublication
@@ -23,7 +24,7 @@ class EnjoyMavenPublishPlugin implements Plugin<Project> {
 
         // add the needed plugin
         targetProject.plugins.apply(MavenPublishPlugin)
-        targetProject.getTasks().find {"publish"}.doLast {
+        targetProject.getTasks().find { "publish" }.doLast {
             println("-----------------auto publish finish-------------------")
         }
 
@@ -55,6 +56,26 @@ class EnjoyMavenPublishPlugin implements Plugin<Project> {
 
                     publications {
                         maven(MavenPublication) {
+                            def aarList = []
+                            def jarList = []
+                            def parentPath = targetProject.path.replace(":", "/")
+                            File file = new File(targetProject.rootProject.projectDir.absolutePath + "/" + parentPath + "/" + "build.gradle")
+                            println(file.absolutePath)
+                            if (file.exists()) {
+                                file.withReader("UTF-8") { reader ->
+                                    reader.eachLine {
+                                        if (it.contains("@aar")) {
+                                            aarList.add(it)
+                                        }
+                                        if (it.contains("@jar")) {
+                                            jarList.add(it)
+                                        }
+                                    }
+                                }
+                            }
+                            println("aarList: " + aarList)
+                            println("jarList: " + jarList)
+
                             defaultVersion = targetProject.hasProperty("version") ? targetProject.version : publishExt.version
                             artifact "${targetProject.buildDir}/outputs/aar/${projectName}-release.aar"
                             groupId publishExt.groupId
@@ -71,12 +92,24 @@ class EnjoyMavenPublishPlugin implements Plugin<Project> {
                             pom.withXml {
                                 def dependenciesNode = asNode().appendNode('dependencies')
                                 targetProject.configurations.implementation.allDependencies.withType(ModuleDependency) { ModuleDependency dp ->
-                                    println("dependencies ${dp.name} ${dp.version}")
-                                    if (dp.version != "unspecified" && !projectMap.containsKey(dp.name)) { // 过滤项目内library引用
+                                    println("dependencies ${dp.name} ${dp.version} ${dp.toString()}")
+                                    if (dp.version != "unspecified" && !projectMap.containsKey(dp.name)) {
+                                        // 过滤项目内library引用
                                         def dependencyNode = dependenciesNode.appendNode('dependency')
                                         dependencyNode.appendNode('groupId', dp.group)
                                         dependencyNode.appendNode('artifactId', dp.name)
                                         dependencyNode.appendNode('version', dp.version)
+                                        dependencyNode.appendNode('scope', 'compile')
+                                        aarList.each {
+                                            if (it.contains("${dp.group}") && it.contains("${dp.name}")){
+                                                dependencyNode.appendNode('type', 'aar')
+                                            }
+                                        }
+                                        jarList.each {
+                                            if (it.contains("${dp.group}") && it.contains("${dp.name}")){
+                                                dependencyNode.appendNode('type', 'jar')
+                                            }
+                                        }
 
                                         // for exclusions
                                         if (dp.excludeRules.size() > 0) {

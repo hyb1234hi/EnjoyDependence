@@ -58,7 +58,12 @@ class WriteVersionTask extends DefaultTask {
             if (rootVersionFile.exists()) {
                 rootVersionFile.withReader('UTF-8') { reader ->
                     reader.eachLine {
-                        if (it.contains(project.name)) {
+                        String[] temp = it.split("=")
+                        String projectName = ""
+                        if (temp.size() == 2) {
+                            projectName = temp[0]
+                        }
+                        if (projectName.contains(project.name)) {
                             oldVersion.add(it)
                         }
                     }
@@ -74,7 +79,12 @@ class WriteVersionTask extends DefaultTask {
                 if (rootVersionFile.exists()) {
                     rootVersionFile.withReader('UTF-8') { reader ->
                         reader.eachLine {
-                            if (it.contains(project.name)) {
+                            String[] temp = it.split("=")
+                            String projectName = ""
+                            if (temp.size() == 2) {
+                                projectName = temp[0]
+                            }
+                            if (projectName.contains(project.name)) {
                                 oldVersion.add(it)
                             }
                         }
