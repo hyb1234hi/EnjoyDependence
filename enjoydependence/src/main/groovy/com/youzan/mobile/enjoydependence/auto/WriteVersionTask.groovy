@@ -12,7 +12,9 @@ class WriteVersionTask extends DefaultTask {
 
     @TaskAction
     void wtiteVersion() {
-        defaultVersion = project.hasProperty("version") ? project.version : defaultVersion
+        if (project.hasProperty("version") && project.version != "unspecified") {
+            defaultVersion = project.version
+        }
         println("-----------------auto write ${project.name} version: ${defaultVersion}----------------")
         if (defaultVersion != "") {
             //写入到project的version.property

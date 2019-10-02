@@ -51,8 +51,10 @@ class EnjoyMavenPublishPlugin implements Plugin<Project> {
                     }
 
                     //版本号优先采用编译传入参数，为空时采用version.properties中设定版本号
-                    String defaultVersion = targetProject.hasProperty("version") ? targetProject.version : publishExt.version
-
+                    String defaultVersion = publishExt.version
+                    if (targetProject.hasProperty("version") && targetProject.version != "unspecified") {
+                        defaultVersion = targetProject.version
+                    }
                     //本地lib依赖过滤
                     Map<String, Project> projectMap = new HashMap<String, Project>()
                     targetProject.rootProject.subprojects.each { pro ->
@@ -173,8 +175,10 @@ class EnjoyMavenPublishPlugin implements Plugin<Project> {
                     }
 
                     //版本号优先采用编译传入参数，为空时采用version.properties中设定版本号
-                    String defaultVersion = targetProject.hasProperty("version") ? targetProject.version : publishExt.version
-
+                    String defaultVersion = publishExt.version
+                    if (targetProject.hasProperty("version") && targetProject.version != "unspecified") {
+                        defaultVersion = targetProject.version
+                    }
                     //本地lib依赖过滤
                     Map<String, Project> projectMap = new HashMap<String, Project>()
                     targetProject.rootProject.subprojects.each { pro ->

@@ -59,41 +59,24 @@ dependencies {
     releaseApi('com.squareup.okhttp3:okhttp-urlconnection:403.12.1')
 }
 
-//mavenPublish {
-//    Properties properties = new Properties()
-//    InputStream inputStream = project.file('local.properties').newDataInputStream()
-//    properties.load(inputStream)
-//
-//    Properties versionP = new Properties()
-//    InputStream versionPStream = project.file('version.properties').newDataInputStream()
-//    versionP.load(versionPStream)
-//
-//    localPublish = true
-//    version = versionP.getProperty("versionName") // 如果不包含SNAPSHOT，则发布到release的仓库
-//    groupId = properties.getProperty("sdk_groupId")
-//    artifactId = properties.getProperty("sdk_artifactId")
-//    userName="mobile"
-//    password="BlRlkE9W"
-//    snapshotRepo="http://maven.qima-inc.com/content/repositories/snapshots/"
-//}
-//
-//autoPublish {
-//    dependsOn = "assemble"
-//}
+mavenPublish {
+    Properties properties = new Properties()
+    InputStream inputStream = project.file('local.properties').newDataInputStream()
+    properties.load(inputStream)
 
-publishing {
-    repositories {
-        mavenLocal()
-    }
+    Properties versionP = new Properties()
+    InputStream versionPStream = project.file('version.properties').newDataInputStream()
+    versionP.load(versionPStream)
 
-    publications {
-        android.libraryVariants.all { variant ->
-            "maven${variant.name.capitalize()}Aar"(MavenPublication) {
-                from components.findByName("android${variant.name.capitalize()}")
-                groupId 'com.youzan.mobile'
-                artifactId 'lib-common'
-                version "1.0.0-${variant.name}"
-            }
-        }
-    }
+    localPublish = true
+    version = versionP.getProperty("versionName") // 如果不包含SNAPSHOT，则发布到release的仓库
+    groupId = properties.getProperty("sdk_groupId")
+    artifactId = properties.getProperty("sdk_artifactId")
+    userName="mobile"
+    password="BlRlkE9W"
+    snapshotRepo="http://maven.qima-inc.com/content/repositories/snapshots/"
+}
+
+autoPublish {
+    dependsOn = "publishMavenDebugAarPublicationToMavenLocalRepository"
 }

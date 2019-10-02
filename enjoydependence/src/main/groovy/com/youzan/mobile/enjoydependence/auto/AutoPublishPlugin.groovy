@@ -27,13 +27,13 @@ class AutoPublishPlugin implements Plugin<Project> {
         AutoPublishExt autoPublishExt = project.extensions.create("autoPublish", AutoPublishExt)
 
         project.afterEvaluate {
-            if (project.getTasks().findByName("publish") && project.getTasks().find {
+            if (project.getTasks().find {
                 autoPublishExt.dependsOn
             }) {
-                project.getTasks().create("WriteVersion", WriteVersionTask.class)
-                project.getTasks().create("AutoPublish", AutoPublishTask.class).dependsOn([autoPublishExt.dependsOn])
-                project.getTasks().find { autoPublishExt.dependsOn }.finalizedBy("publish")
-                project.getTasks().find { "publish" }.finalizedBy("WriteVersion")
+                project.getTasks().create("WriteVersion", WriteVersionTask.class).dependsOn(autoPublishExt.dependsOn)
+                project.getTasks().create("AutoPublish", AutoPublishTask.class).dependsOn("WriteVersion")
+//                project.getTasks().find { autoPublishExt.dependsOn }.finalizedBy("publish")
+//                project.getTasks().find { "publish" }.finalizedBy("WriteVersion")
 
                 project.getGradle().addListener(new TaskExecutionListener() {
                     @Override
@@ -43,7 +43,7 @@ class AutoPublishPlugin implements Plugin<Project> {
 
                     @Override
                     void afterExecute(Task task, TaskState taskState) {
-                        if (task.name == autoPublishExt.dependsOn && task.state.getFailure() != null) {
+                        if (task.state.getFailure() != null) {
                             taskState.rethrowFailure()
                         }
                     }

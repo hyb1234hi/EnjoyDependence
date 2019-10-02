@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.youzan.mobile.enjoydependence
+package com.youzan.mobile.enjoydependence.androidPublish
 
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.BaseVariantOutput
+import com.youzan.mobile.enjoydependence.androidPublish.PublishConfiguration
 import org.gradle.api.artifacts.PublishArtifact
 import org.gradle.api.internal.artifacts.publish.ArchivePublishArtifact
 import org.gradle.api.tasks.bundling.AbstractArchiveTask

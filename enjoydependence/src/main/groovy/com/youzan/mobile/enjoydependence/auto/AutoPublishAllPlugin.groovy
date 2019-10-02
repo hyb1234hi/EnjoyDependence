@@ -9,12 +9,16 @@ import org.gradle.api.Project
  */
 class AutoPublishAllPlugin implements Plugin<Project> {
 
+    def defaultVersion = ""
+
     @Override
     void apply(Project project) {
         if (project.name != "app") {
             return
         }
-        def defaultVersion = project.hasProperty("version") ? project.version : ""
+        if (project.hasProperty("version") && project.version != "unspecified") {
+            defaultVersion = project.version
+        }
         AutoPublishExt autoPublishExt = project.extensions.create("autoPublish", AutoPublishExt)
         Map<String, Project> projectMap = new HashMap<String, Project>()
         project.afterEvaluate {

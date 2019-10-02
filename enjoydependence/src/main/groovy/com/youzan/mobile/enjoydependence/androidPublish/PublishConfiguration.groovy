@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.youzan.mobile.enjoydependence
+package com.youzan.mobile.enjoydependence.androidPublish
 
 import org.gradle.api.artifacts.PublishArtifact
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.youzan.mobile.enjoydependence
+package com.youzan.mobile.enjoydependence.androidPublish
 
 import com.google.common.collect.ImmutableSet
 import com.google.common.collect.Sets
