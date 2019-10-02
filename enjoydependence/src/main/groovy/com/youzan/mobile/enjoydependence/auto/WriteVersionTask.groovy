@@ -65,7 +65,7 @@ class WriteVersionTask extends DefaultTask {
                         if (temp.size() == 2) {
                             projectName = temp[0]
                         }
-                        if (projectName.contains(project.name)) {
+                        if (projectName == project.name) {
                             oldVersion.add(it)
                         }
                     }

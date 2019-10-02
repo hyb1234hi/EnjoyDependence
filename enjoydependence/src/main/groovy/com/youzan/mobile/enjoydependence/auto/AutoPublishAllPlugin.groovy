@@ -58,8 +58,22 @@ class AutoPublishAllPlugin implements Plugin<Project> {
                     }
                 }
                 projectMap.each { key, value ->
-                    println("---------------AutoBuild FirstPriority ${key}----------------")
-                    if (!autoPublishExt.firstPriority.contains(key) && !autoPublishExt.secondPriority.contains(key)) {
+                    if (autoPublishExt.thirdPriority.contains(key)) {
+                        println("---------------AutoBuild ThirdPriority ${key}----------------")
+                        def command = "../gradlew :modules:${key}:${autoPublishExt.command} -x lint --daemon"
+                        if (defaultVersion != "") {
+                            command = "../gradlew :modules:${key}:${autoPublishExt.command} -Pversion=${defaultVersion} -x lint --daemon"
+                        }
+                        project.exec { execSpec ->
+                            //配置闭包的内容
+                            executable 'bash'
+                            args '-c', command
+                        }
+                    }
+                }
+                projectMap.each { key, value ->
+                    println("---------------AutoBuild OtherPriority ${key}----------------")
+                    if (!autoPublishExt.firstPriority.contains(key) && !autoPublishExt.secondPriority.contains(key) && !autoPublishExt.thirdPriority.contains(key)) {
                         def command = "../gradlew :modules:${key}:${autoPublishExt.command} -x lint --daemon"
                         if (defaultVersion != "") {
                             command = "../gradlew :modules:${key}:${autoPublishExt.command} -Pversion=${defaultVersion} -x lint --daemon"
