@@ -48,31 +48,35 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testImplementation 'junit:junit:4.12'
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:403.12.1'
-    implementation 'com.squareup.okhttp3:okhttp-urlconnection:403.12.1'
+//    implementation 'com.squareup.okhttp3:okhttp-urlconnection:403.12.1'
     api("com.youzan.mobile:jsboost:1.0.6@aar")
+    releaseApi('com.squareup.okhttp3:okhttp-urlconnection:403.12.1')
 }
 
-mavenPublish {
-    Properties properties = new Properties()
-    InputStream inputStream = project.file('local.properties').newDataInputStream()
-    properties.load(inputStream)
-
-    Properties versionP = new Properties()
-    InputStream versionPStream = project.file('version.properties').newDataInputStream()
-    versionP.load(versionPStream)
-
-    localPublish = true
-    version = versionP.getProperty("versionName") // 如果不包含SNAPSHOT，则发布到release的仓库
-    groupId = properties.getProperty("sdk_groupId")
-    artifactId = properties.getProperty("sdk_artifactId")
-    userName="mobile"
-    password="BlRlkE9W"
-    snapshotRepo="http://maven.qima-inc.com/content/repositories/snapshots/"
-}
-
-autoPublish {
-    dependsOn = "assemble"
-}
+//mavenPublish {
+//    Properties properties = new Properties()
+//    InputStream inputStream = project.file('local.properties').newDataInputStream()
+//    properties.load(inputStream)
+//
+//    Properties versionP = new Properties()
+//    InputStream versionPStream = project.file('version.properties').newDataInputStream()
+//    versionP.load(versionPStream)
+//
+//    localPublish = true
+//    version = versionP.getProperty("versionName") // 如果不包含SNAPSHOT，则发布到release的仓库
+//    groupId = properties.getProperty("sdk_groupId")
+//    artifactId = properties.getProperty("sdk_artifactId")
+//    userName="mobile"
+//    password="BlRlkE9W"
+//    snapshotRepo="http://maven.qima-inc.com/content/repositories/snapshots/"
+//}
+//
+//autoPublish {
+//    dependsOn = "assemble"
+//}

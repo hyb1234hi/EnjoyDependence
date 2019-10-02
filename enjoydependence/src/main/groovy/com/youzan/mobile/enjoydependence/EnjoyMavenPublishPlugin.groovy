@@ -22,6 +22,10 @@ class EnjoyMavenPublishPlugin implements Plugin<Project> {
             return
         }
 
+        if (targetProject.name == "app" || targetProject.name == "modules") {
+            return
+        }
+
         // add the needed plugin
         targetProject.plugins.apply(MavenPublishPlugin)
         targetProject.getTasks().find { "publish" }.doLast {
@@ -53,6 +57,25 @@ class EnjoyMavenPublishPlugin implements Plugin<Project> {
                     Map<String, Project> projectMap = new HashMap<String, Project>()
                     targetProject.rootProject.subprojects.each { pro ->
                         projectMap.put(pro.name, pro)
+                    }
+
+                    //依赖聚合
+                    def configs = ["api", "releaseApi", "phoneApi", "padApi", "implementation", "debugApi"]
+                    def workDependencies = []//有效依赖
+                    def runtimeDependencies = []//runtime scope依赖
+                    targetProject.configurations.all { Configuration configuration ->
+                        if (!configuration.name.contains("test") && !configuration.name.contains("Test") && !configuration.name.contains("kapt") && configuration.dependencies.size() > 0) {
+                            println("configuration name: ${configuration.name}")
+                            configuration.dependencies.withType(ModuleDependency).all { ModuleDependency dp ->
+                                if (dp.version != "unspecified" && !projectMap.containsKey(dp.name)) {
+                                    println(dp.toString())
+                                    workDependencies.add(dp)
+                                    if (configuration.name == "implementation") {
+                                        runtimeDependencies.add(dp)
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     //遍历project的build.gradle,收集aar及jar
@@ -100,34 +123,37 @@ class EnjoyMavenPublishPlugin implements Plugin<Project> {
                             //依赖文件POM信息生成
                             pom.withXml {
                                 def dependenciesNode = asNode().appendNode('dependencies')
-                                targetProject.configurations.implementation.allDependencies.withType(ModuleDependency) { ModuleDependency dp ->
-                                    println("${dp.toString()}")
-                                    if (dp.version != "unspecified" && !projectMap.containsKey(dp.name)) {
-                                        // 过滤项目内library引用
-                                        def dependencyNode = dependenciesNode.appendNode('dependency')
-                                        dependencyNode.appendNode('groupId', dp.group)
-                                        dependencyNode.appendNode('artifactId', dp.name)
-                                        dependencyNode.appendNode('version', dp.version)
+                                workDependencies.each { ModuleDependency dp ->
+                                    println(dp.toString())
+                                    def dependencyNode = dependenciesNode.appendNode('dependency')
+                                    dependencyNode.appendNode('groupId', dp.group)
+                                    dependencyNode.appendNode('artifactId', dp.name)
+                                    dependencyNode.appendNode('version', dp.version)
+                                    if (runtimeDependencies.find { ModuleDependency dependency ->
+                                        dependency.name == dp.name
+                                    }) {
+                                        dependencyNode.appendNode('scope', 'runtime')
+                                    } else {
                                         dependencyNode.appendNode('scope', 'compile')
-                                        aarList.each {
-                                            if (it.contains("${dp.group}") && it.contains("${dp.name}")){
-                                                dependencyNode.appendNode('type', 'aar')
-                                            }
+                                    }
+                                    aarList.each {
+                                        if (it.contains("${dp.group}") && it.contains("${dp.name}")) {
+                                            dependencyNode.appendNode('type', 'aar')
                                         }
-                                        jarList.each {
-                                            if (it.contains("${dp.group}") && it.contains("${dp.name}")){
-                                                dependencyNode.appendNode('type', 'jar')
-                                            }
+                                    }
+                                    jarList.each {
+                                        if (it.contains("${dp.group}") && it.contains("${dp.name}")) {
+                                            dependencyNode.appendNode('type', 'jar')
                                         }
+                                    }
 
-                                        // for exclusions
-                                        if (dp.excludeRules.size() > 0) {
-                                            def exclusions = dependencyNode.appendNode('exclusions')
-                                            dp.excludeRules.each { ExcludeRule ex ->
-                                                def exclusion = exclusions.appendNode('exclusion')
-                                                exclusion.appendNode('groupId', ex.group)
-                                                exclusion.appendNode('artifactId', ex.module)
-                                            }
+                                    // for exclusions
+                                    if (dp.excludeRules.size() > 0) {
+                                        def exclusions = dependencyNode.appendNode('exclusions')
+                                        dp.excludeRules.each { ExcludeRule ex ->
+                                            def exclusion = exclusions.appendNode('exclusion')
+                                            exclusion.appendNode('groupId', ex.group)
+                                            exclusion.appendNode('artifactId', ex.module)
                                         }
                                     }
                                 }
@@ -201,12 +227,12 @@ class EnjoyMavenPublishPlugin implements Plugin<Project> {
                                         dependencyNode.appendNode('version', dp.version)
                                         dependencyNode.appendNode('scope', 'compile')
                                         aarList.each {
-                                            if (it.contains("${dp.group}") && it.contains("${dp.name}")){
+                                            if (it.contains("${dp.group}") && it.contains("${dp.name}")) {
                                                 dependencyNode.appendNode('type', 'aar')
                                             }
                                         }
                                         jarList.each {
-                                            if (it.contains("${dp.group}") && it.contains("${dp.name}")){
+                                            if (it.contains("${dp.group}") && it.contains("${dp.name}")) {
                                                 dependencyNode.appendNode('type', 'jar')
                                             }
                                         }
