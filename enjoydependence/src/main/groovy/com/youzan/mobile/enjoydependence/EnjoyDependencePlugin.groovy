@@ -15,7 +15,8 @@ class EnjoyDependencePlugin implements Plugin<Project> {
         }
         // apply the maven publish plugin and dynamic dependency resolve plugin to all the sub projects
         project.subprojects {
-            it.plugins.apply(EnjoyMavenPublishPlugin)
+//            it.plugins.apply(EnjoyMavenPublishPlugin)
+            it.plugins.apply(EnjoyPublishPlugin)
             it.plugins.apply(DependenceResolvePlugin)
             it.plugins.apply(BuildTimeCostPlugin)
             it.plugins.apply(AutoPublishPlugin)

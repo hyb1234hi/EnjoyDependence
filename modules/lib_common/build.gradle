@@ -80,3 +80,20 @@ dependencies {
 //autoPublish {
 //    dependsOn = "assemble"
 //}
+
+publishing {
+    repositories {
+        mavenLocal()
+    }
+
+    publications {
+        android.libraryVariants.all { variant ->
+            "maven${variant.name.capitalize()}Aar"(MavenPublication) {
+                from components.findByName("android${variant.name.capitalize()}")
+                groupId 'com.youzan.mobile'
+                artifactId 'lib-common'
+                version "1.0.0-${variant.name}"
+            }
+        }
+    }
+}
