@@ -31,8 +31,9 @@ dependencies {
     implementation project(path: ':modules:lib_common')
 }
 
-//autoPublish {
-//    command = "AutoPublish"
-//    excludeModules = ["app", "enjoydependence", "modules"]
-//}
+autoPublishAll {
+    padCommand = "AutoPadPublish"
+//    phoneCommand = "AutoPhonePublish"
+    excludeModules = ["app", "enjoydependence", "modules"]
+}
 

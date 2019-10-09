@@ -1,6 +1,6 @@
 package com.youzan.mobile.enjoydependence
 
-import com.youzan.mobile.enjoydependence.auto.AutoPublishAllPlugin
+import com.youzan.mobile.enjoydependence.auto.all.AutoPublishAllPlugin
 import com.youzan.mobile.enjoydependence.auto.AutoPublishPlugin
 import com.youzan.mobile.enjoydependence.build.BuildTimeCostPlugin
 import org.gradle.api.Plugin

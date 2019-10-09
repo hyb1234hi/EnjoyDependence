@@ -1,4 +1,4 @@
-package com.youzan.mobile.enjoydependence.auto
+package com.youzan.mobile.enjoydependence.auto.pad
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
@@ -6,7 +6,7 @@ import org.gradle.api.tasks.TaskAction
 /**
  * 自动写入版本号
  */
-class WriteVersionTask extends DefaultTask {
+class WriteVersionPadTask extends DefaultTask {
 
     String defaultVersion = ""
 

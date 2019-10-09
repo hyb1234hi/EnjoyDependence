@@ -82,8 +82,10 @@ mavenPublish {
 
 autoPublish {
     if (localPublishSwitch) {
-        dependsOn = "publishMavenDebugAarPublicationToMavenLocalRepository"
+        padDependOn = "publishMavenDebugAarPublicationToMavenLocalRepository"
+        phoneDependOn = "publishMavenDebugAarPublicationToMavenLocalRepository"
     } else {
-        dependsOn = "publishMavenDebugAarPublicationToMavenRepository"
+        padDependOn = "publishMavenDebugAarPublicationToMavenRepository"
+        phoneDependOn = "publishMavenDebugAarPublicationToMavenRepository"
     }
 }

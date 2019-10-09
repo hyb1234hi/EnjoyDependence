@@ -1,9 +1,9 @@
-package com.youzan.mobile.enjoydependence.auto
+package com.youzan.mobile.enjoydependence.auto.pad
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
-class AutoPublishTask extends DefaultTask {
+class AutoPublishPadTask extends DefaultTask {
 
     @TaskAction
     void autoPublish() {
