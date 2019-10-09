@@ -30,12 +30,9 @@ dependencies {
     implementation project(path: ':modules:libb')
     implementation project(path: ':modules:lib_common')
 }
-//
-//autoPublish {
-//    command = "AutoPublish"
-//    excludeModules = ["app", "enjoydependence", "modules"]
-//}
 
-
-
+autoPublish {
+    command = "AutoPublish"
+    excludeModules = ["app", "enjoydependence", "modules"]
+}
 
