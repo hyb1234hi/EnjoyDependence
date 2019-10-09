@@ -11,6 +11,6 @@ public class APlugin extends LibAPlugin {
 
     @Override
     public void ask() {
-        System.out.println("我是libA，我要问话");
+        System.out.println("我是libA，我要问话，我是个测试");
     }
 }
