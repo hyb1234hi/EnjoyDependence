@@ -44,7 +44,6 @@ class DefaultPublishConfiguration implements PublishConfiguration {
     Set<PublishArtifact> getArtifacts() {
         def configurations = project.configurations
         def artifacts = configurations.getByName(Dependency.ARCHIVES_CONFIGURATION).allArtifacts.toSet()
-        println("artifacts: ${artifacts.toString()}")
 
         // Fix duplicated artifact when use android gradle build tools 2.3.3 or lower
         return artifacts.unique(false, new Comparator<PublishArtifact>() {
