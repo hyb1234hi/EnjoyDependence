@@ -68,15 +68,16 @@ mavenPublish {
     InputStream versionPStream = project.file('version.properties').newDataInputStream()
     versionP.load(versionPStream)
 
-    localPublish = true
+    localPublish = false
     version = versionP.getProperty("versionName") // 如果不包含SNAPSHOT，则发布到release的仓库
     groupId = properties.getProperty("sdk_groupId")
     artifactId = properties.getProperty("sdk_artifactId")
     userName="mobile"
     password="BlRlkE9W"
     snapshotRepo="http://maven.qima-inc.com/content/repositories/snapshots/"
+    releaseRepo="http://maven.qima-inc.com/content/repositories/releases/"
 }
 
 autoPublish {
-    dependsOn = "publishMavenDebugAarPublicationToMavenLocalRepository"
+    dependsOn = "publishMavenDebugAarPublicationToMavenRepository"
 }

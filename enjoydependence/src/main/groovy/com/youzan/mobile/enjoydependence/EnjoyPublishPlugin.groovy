@@ -57,7 +57,6 @@ class EnjoyPublishPlugin implements Plugin<Project> {
             }
             if (publishExt.localPublish) {
                 project.publishing {
-                    println("publish to local maven")
                     //版本号优先采用编译传入参数，为空时采用version.properties中设定版本号
                     String defaultVersion = publishExt.version
                     if (project.hasProperty("version") && project.version != "unspecified") {
@@ -80,9 +79,46 @@ class EnjoyPublishPlugin implements Plugin<Project> {
                         }
                     }
                 }
+            } else {
+                project.publishing {
+                    //版本号优先采用编译传入参数，为空时采用version.properties中设定版本号
+                    String defaultVersion = publishExt.version
+                    if (project.hasProperty("version") && project.version != "unspecified") {
+                        defaultVersion = project.version
+                    }
+
+                    String urlPath
+                    if (defaultVersion.contains("SNAPSHOT")) {
+                        urlPath = publishExt.snapshotRepo
+                    } else {
+                        urlPath = publishExt.releaseRepo
+                    }
+
+                    repositories {
+                        maven {
+                            credentials {
+                                username publishExt.userName // 仓库发布用户名
+                                password publishExt.password // 仓库发布用户密码
+                            }
+                            url urlPath // 仓库地址
+                        }
+                    }
+                    publications {
+                        def android = project.extensions.getByType(LibraryExtension)
+                        android.libraryVariants.all { variant ->
+                            if (variant.name.capitalize().endsWith("Debug")) {
+                                "maven${variant.name.capitalize()}Aar"(MavenPublication) {
+                                    from project.components.findByName("android${variant.name.capitalize()}")
+                                    groupId publishExt.groupId
+                                    artifactId publishExt.artifactId
+                                    version defaultVersion
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
-
     }
 
     private void addSoftwareComponents(Project project) {

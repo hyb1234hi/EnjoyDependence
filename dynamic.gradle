@@ -1,47 +1,47 @@
-import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
-
-dynamicDependency {
-    Properties properties = new Properties()
-    InputStream inputStream = project.rootProject.file('version.properties').newDataInputStream()
-    properties.load(inputStream)
-
-    String rootDir = project.rootProject.rootDir
-    File enjoyJson = new File(rootDir + "/enjoy.json")
-    HashMap<String, String> chooseMap = new HashMap<>()
-    if (enjoyJson.exists()) {
-        def jsonArray = new JsonSlurper().parse(enjoyJson)
-        jsonArray.each {
-            def json = new JsonSlurper().parseText(JsonOutput.toJson(it))
-            chooseMap.put(json.name, json.choose)
-        }
-    }
-
-
-    lib_common {
-        //如果是true，则使用本地模块作为依赖参与编译，否则使用下面的配置获取远程的构件作为依赖参与编译
-        debuggable = chooseMap.get("lib_common", true)
-        groupId = "com.youzan.mobile"
-        artifactId = "lib_common" // 默认使用模块的名称作为其值
-        version = properties.getProperty("lib_common")
-    }
-    liba {
-        //如果是true，则使用本地模块作为依赖参与编译，否则使用下面的配置获取远程的构件作为依赖参与编译
-        debuggable = chooseMap.get("lib_common", true)
-        groupId = "com.youzan.mobile"
-        artifactId = "liba" // 默认使用模块的名称作为其值
-        version = properties.getProperty("liba")
-    }
-    libb {
-        //如果是true，则使用本地模块作为依赖参与编译，否则使用下面的配置获取远程的构件作为依赖参与编译
-        debuggable = chooseMap.get("lib_common", true)
-        groupId = "com.youzan.mobile"
-        artifactId = "libb" // 默认使用模块的名称作为其值
-        version = properties.getProperty("libb")
-    }
-}
-
-taskExecTime {
-    threshold 100
-    sorted true
-}
+//import groovy.json.JsonOutput
+//import groovy.json.JsonSlurper
+//
+//dynamicDependency {
+//    Properties properties = new Properties()
+//    InputStream inputStream = project.rootProject.file('version.properties').newDataInputStream()
+//    properties.load(inputStream)
+//
+//    String rootDir = project.rootProject.rootDir
+//    File enjoyJson = new File(rootDir + "/enjoy.json")
+//    HashMap<String, String> chooseMap = new HashMap<>()
+//    if (enjoyJson.exists()) {
+//        def jsonArray = new JsonSlurper().parse(enjoyJson)
+//        jsonArray.each {
+//            def json = new JsonSlurper().parseText(JsonOutput.toJson(it))
+//            chooseMap.put(json.name, json.choose)
+//        }
+//    }
+//
+//
+//    lib_common {
+//        //如果是true，则使用本地模块作为依赖参与编译，否则使用下面的配置获取远程的构件作为依赖参与编译
+//        debuggable = chooseMap.get("lib_common", true)
+//        groupId = "com.youzan.mobile"
+//        artifactId = "lib_common" // 默认使用模块的名称作为其值
+//        version = properties.getProperty("lib_common")
+//    }
+//    liba {
+//        //如果是true，则使用本地模块作为依赖参与编译，否则使用下面的配置获取远程的构件作为依赖参与编译
+//        debuggable = chooseMap.get("lib_common", true)
+//        groupId = "com.youzan.mobile"
+//        artifactId = "liba" // 默认使用模块的名称作为其值
+//        version = properties.getProperty("liba")
+//    }
+//    libb {
+//        //如果是true，则使用本地模块作为依赖参与编译，否则使用下面的配置获取远程的构件作为依赖参与编译
+//        debuggable = chooseMap.get("lib_common", true)
+//        groupId = "com.youzan.mobile"
+//        artifactId = "libb" // 默认使用模块的名称作为其值
+//        version = properties.getProperty("libb")
+//    }
+//}
+//
+//taskExecTime {
+//    threshold 100
+//    sorted true
+//}
