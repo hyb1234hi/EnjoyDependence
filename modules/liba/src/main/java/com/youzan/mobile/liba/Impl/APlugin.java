@@ -8,4 +8,9 @@ public class APlugin extends LibAPlugin {
     public void say() {
         System.out.println("我是libA");
     }
+
+    @Override
+    public void ask() {
+        System.out.println("我是libA，我要问话");
+    }
 }

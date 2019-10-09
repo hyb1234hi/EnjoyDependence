@@ -33,7 +33,7 @@ dependencies {
 
 autoPublishAll {
     padCommand = "AutoPadPublish"
-//    phoneCommand = "AutoPhonePublish"
+    phoneCommand = "AutoPhonePublish"
     excludeModules = ["app", "enjoydependence", "modules"]
 }
 
