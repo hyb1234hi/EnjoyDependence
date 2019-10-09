@@ -59,6 +59,8 @@ dependencies {
     releaseApi('com.squareup.okhttp3:okhttp-urlconnection:403.12.1')
 }
 
+def localPublishSwitch = true
+
 mavenPublish {
     Properties properties = new Properties()
     InputStream inputStream = project.file('local.properties').newDataInputStream()
@@ -68,7 +70,7 @@ mavenPublish {
     InputStream versionPStream = project.file('version.properties').newDataInputStream()
     versionP.load(versionPStream)
 
-    localPublish = false
+    localPublish = localPublishSwitch
     version = versionP.getProperty("versionName") // 如果不包含SNAPSHOT，则发布到release的仓库
     groupId = properties.getProperty("sdk_groupId")
     artifactId = properties.getProperty("sdk_artifactId")
@@ -79,5 +81,9 @@ mavenPublish {
 }
 
 autoPublish {
-    dependsOn = "publishMavenDebugAarPublicationToMavenRepository"
+    if (localPublishSwitch) {
+        dependsOn = "publishMavenDebugAarPublicationToMavenLocalRepository"
+    } else {
+        dependsOn = "publishMavenDebugAarPublicationToMavenRepository"
+    }
 }
