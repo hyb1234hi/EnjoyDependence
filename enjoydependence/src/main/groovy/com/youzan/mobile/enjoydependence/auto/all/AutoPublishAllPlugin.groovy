@@ -22,23 +22,16 @@ class AutoPublishAllPlugin implements Plugin<Project> {
         AutoPublishAllExt autoPublishAllExt = project.extensions.create("autoPublishAll", AutoPublishAllExt)
         project.afterEvaluate {
             if (autoPublishAllExt.padCommand != "") {
-                project.getTasks().create("AutoPublishPadAll", AutoPublishPadTask.class).doFirst {
+                project.getTasks().create("AutoPublishPadAll", AutoPublishPadAllTask.class).doFirst {
                     println("-------------------start publish pad all--------------------")
                 }
             }
 
             if (autoPublishAllExt.phoneCommand != "") {
                 //全自动发布phone aar
-                project.getTasks().create("AutoPublishPhoneAll", AutoPublishPhoneTask.class).doFirst {
+                project.getTasks().create("AutoPublishPhoneAll", AutoPublishPhoneAllTask.class).doFirst {
                     println("-------------------start publish phone all--------------------")
                 }
-            }
-
-            if (project.getTasks().find { "AutoPublishPhoneAll" } && project.getTasks().find {
-                "AutoPublishPadAll"
-            }) {
-                project.getTasks().create("AutoPublishAll", AutoPublishAllTask.class).dependsOn(["AutoPublishPhoneAll", "AutoPublishPadAll"])
-                project.getTasks().find{"AutoPublishPhoneAll"}.mustRunAfter("AutoPublishPadAll")
             }
         }
     }

@@ -7,7 +7,7 @@ import org.gradle.api.tasks.TaskAction
 /**
  * 自动发布所有的module,仅发布phone
  */
-class AutoPublishPhoneTask extends DefaultTask {
+class AutoPublishPhoneAllTask extends DefaultTask {
 
     def defaultVersion = ""
     def flavor = ""
