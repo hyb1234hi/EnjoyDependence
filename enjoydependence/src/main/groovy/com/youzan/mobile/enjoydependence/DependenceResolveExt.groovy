@@ -19,6 +19,10 @@ class DependenceResolveExt {
      */
     boolean debuggable=true
     /**
+     * the aar dependency config part of flavor
+     */
+    String flavor//phone or pad
+    /**
      * the aar dependency config part of groupId
      */
     String groupId

@@ -55,15 +55,21 @@ class DependenceResolvePlugin implements Plugin<Project> {
                 println("targetProjectName:" + targetProject.getName() + "; resolveExtMap Size:" + resolveExtMap.size())
             }
             //已配置依赖为主，不涉及module的卸载
-            println("${targetProject.getName()} configurations size :" +  targetProject.configurations.size())
+            println("${targetProject.getName()} configurations size :" + targetProject.configurations.size())
             targetProject.configurations.all { Configuration configuration ->
-//                println("configuration:" + configuration.getName())
                 if (!configuration.getName().contains("Test") && !configuration.getName().contains("test")) {
                     resolutionStrategy {
                         dependencySubstitution {
                             resolveExtMap.each { key, value ->
-                                println("start replace ${key} with aar: groupId: ${value.groupId}; artifactName:${value.artifactId}; version:${value.version}")
-                                substitute project("${key.path}") with module("${value.groupId}:${getArtifactName(key, value.artifactId)}:${value.version}")
+                                def defaultFlavor = value.flavor
+                                if (targetProject.hasProperty("flavor") && targetProject.flavor != "unspecified") {
+                                    defaultFlavor = targetProject.flavor
+                                }
+                                if (defaultFlavor != "" && defaultFlavor != null) {
+                                    substitute project("${key.path}") with module("${value.groupId}:${getArtifactName(key, value.artifactId + "-" + defaultFlavor)}:${value.version}")
+                                } else {
+                                    substitute project("${key.path}") with module("${value.groupId}:${getArtifactName(key, value.artifactId)}:${value.version}")
+                                }
                             }
                         }
                     }

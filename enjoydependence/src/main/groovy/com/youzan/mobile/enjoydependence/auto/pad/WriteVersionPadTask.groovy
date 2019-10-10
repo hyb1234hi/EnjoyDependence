@@ -1,5 +1,6 @@
 package com.youzan.mobile.enjoydependence.auto.pad
 
+import com.youzan.mobile.enjoydependence.MavenPublishExt
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -12,6 +13,10 @@ class WriteVersionPadTask extends DefaultTask {
 
     @TaskAction
     void wtiteVersion() {
+        MavenPublishExt publishExt = project.extensions.findByType(MavenPublishExt.class)
+        if (publishExt != null) {
+            defaultVersion = publishExt.version
+        }
         if (project.hasProperty("version") && project.version != "unspecified") {
             defaultVersion = project.version
         }

@@ -1,5 +1,7 @@
 package com.youzan.mobile.enjoydependence.auto.phone
 
+import com.youzan.mobile.enjoydependence.MavenPublishExt
+import com.youzan.mobile.enjoydependence.auto.AutoPublishExt
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -12,6 +14,10 @@ class WriteVersionPhoneTask extends DefaultTask {
 
     @TaskAction
     void wtiteVersion() {
+        MavenPublishExt publishExt = project.extensions.findByType(MavenPublishExt.class)
+        if (publishExt != null) {
+            defaultVersion = publishExt.version
+        }
         if (project.hasProperty("version") && project.version != "unspecified") {
             defaultVersion = project.version
         }

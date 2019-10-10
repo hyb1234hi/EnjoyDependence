@@ -10,7 +10,6 @@ import org.gradle.api.Task
 import org.gradle.api.execution.TaskExecutionListener
 import org.gradle.api.tasks.TaskState
 
-
 /**
  * 自动发布单个lib
  * 依赖WriteVersion、autoPublishExt.dependsOn、publish
@@ -31,8 +30,8 @@ class AutoPublishPlugin implements Plugin<Project> {
             if (project.getTasks().find {
                 autoPublishExt.padDependOn
             }) {
-                project.getTasks().create("WritePadVersion", WriteVersionPadTask.class).dependsOn(autoPublishExt.padDependOn)
-                project.getTasks().create("AutoPadPublish", AutoPublishPadTask.class).dependsOn("WritePadVersion")
+                project.getTasks().create("WriteVersionPad", WriteVersionPadTask.class).dependsOn(autoPublishExt.padDependOn)
+                project.getTasks().create("AutoPublishPad", AutoPublishPadTask.class).dependsOn("WriteVersionPad")
 
                 project.getGradle().addListener(new TaskExecutionListener() {
                     @Override
@@ -53,8 +52,8 @@ class AutoPublishPlugin implements Plugin<Project> {
             if (project.getTasks().find {
                 autoPublishExt.phoneDependOn
             }) {
-                project.getTasks().create("WritePhoneVersion", WriteVersionPhoneTask.class).dependsOn(autoPublishExt.phoneDependOn)
-                project.getTasks().create("AutoPhonePublish", AutoPublishPhoneTask.class).dependsOn("WritePhoneVersion")
+                project.getTasks().create("WriteVersionPhone", WriteVersionPhoneTask.class).dependsOn(autoPublishExt.phoneDependOn)
+                project.getTasks().create("AutoPublishPhone", AutoPublishPhoneTask.class).dependsOn("WriteVersionPhone")
 
                 project.getGradle().addListener(new TaskExecutionListener() {
                     @Override
