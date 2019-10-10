@@ -62,6 +62,14 @@ class EnjoyPublishPlugin implements Plugin<Project> {
                     if (project.hasProperty("version") && project.version != "unspecified") {
                         defaultVersion = project.version
                     }
+                    String defaultFlavor = publishExt.flavor
+                    if (project.hasProperty("flavor") && project.flavor != "unspecified") {
+                        defaultFlavor = project.flavor
+                    }
+                    String tempArtifactId = publishExt.artifactId
+                    if (defaultFlavor != "" && defaultFlavor != null) {
+                        tempArtifactId = publishExt.artifactId + "-" + defaultFlavor
+                    }
                     repositories {
                         mavenLocal()
                     }
@@ -72,7 +80,7 @@ class EnjoyPublishPlugin implements Plugin<Project> {
                                 "maven${variant.name.capitalize()}Aar"(MavenPublication) {
                                     from project.components.findByName("android${variant.name.capitalize()}")
                                     groupId publishExt.groupId
-                                    artifactId publishExt.artifactId
+                                    artifactId tempArtifactId
                                     version defaultVersion
                                 }
                             }
@@ -86,7 +94,14 @@ class EnjoyPublishPlugin implements Plugin<Project> {
                     if (project.hasProperty("version") && project.version != "unspecified") {
                         defaultVersion = project.version
                     }
-
+                    String defaultFlavor = publishExt.flavor
+                    if (project.hasProperty("flavor") && project.flavor != "unspecified") {
+                        defaultFlavor = project.flavor
+                    }
+                    String tempArtifactId = publishExt.artifactId
+                    if (defaultFlavor != "" && defaultFlavor != null) {
+                        tempArtifactId = publishExt.artifactId + "-" + defaultFlavor
+                    }
                     String urlPath
                     if (defaultVersion.contains("SNAPSHOT")) {
                         urlPath = publishExt.snapshotRepo
@@ -110,7 +125,7 @@ class EnjoyPublishPlugin implements Plugin<Project> {
                                 "maven${variant.name.capitalize()}Aar"(MavenPublication) {
                                     from project.components.findByName("android${variant.name.capitalize()}")
                                     groupId publishExt.groupId
-                                    artifactId publishExt.artifactId
+                                    artifactId tempArtifactId
                                     version defaultVersion
                                 }
                             }

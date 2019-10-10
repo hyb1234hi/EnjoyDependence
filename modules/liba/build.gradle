@@ -65,6 +65,7 @@ mavenPublish {
     InputStream versionPStream = project.file('version.properties').newDataInputStream()
     versionP.load(versionPStream)
 
+    flavor = "pad"
     localPublish = true
     version = versionP.getProperty("versionName") // 如果不包含SNAPSHOT，则发布到release的仓库
     groupId = properties.getProperty("sdk_groupId")

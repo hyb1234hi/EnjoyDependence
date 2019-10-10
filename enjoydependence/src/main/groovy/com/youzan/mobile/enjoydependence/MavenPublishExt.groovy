@@ -13,5 +13,4 @@ class MavenPublishExt {
     boolean localPublish//本地发布
     String releaseRepo
     String snapshotRepo
-    String[] extension = [""]//带有aar标记的依赖，现暂且用这种方式
 }
