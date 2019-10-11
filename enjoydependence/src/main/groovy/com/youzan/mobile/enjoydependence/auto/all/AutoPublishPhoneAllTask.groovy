@@ -148,6 +148,7 @@ class AutoPublishPhoneAllTask extends DefaultTask {
     def getLastCommitId() {
         try {
             def lastCommitId = ['sh', '-c', 'git rev-parse --short HEAD'].execute().text.trim()
+            println("22222  " + lastCommitId)
             def parentPath = project.path.replace(":", "/")
             File file = new File(project.rootProject.projectDir.absolutePath + "/" + parentPath + "/" + ".glc")//git最后一次提交sort id记录文件
             if (!file.exists()) {
