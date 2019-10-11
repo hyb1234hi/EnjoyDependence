@@ -34,7 +34,7 @@ class AutoPublishPhoneAllTask extends DefaultTask {
                 def command = "../gradlew :modules:${key}:${autoPublishAllExt.phoneCommand} -x lint --daemon"
                 if (defaultVersion != "" && flavor != "") {
                     command = "../gradlew :modules:${key}:${autoPublishAllExt.phoneCommand} -Pversion=${defaultVersion} -Pflavor=${flavor} -x lint --daemon"
-                } else if (defaultVersion != ""){
+                } else if (defaultVersion != "") {
                     command = "../gradlew :modules:${key}:${autoPublishAllExt.phoneCommand} -Pversion=${defaultVersion} -x lint --daemon"
                 }
                 project.exec { execSpec ->
@@ -50,7 +50,7 @@ class AutoPublishPhoneAllTask extends DefaultTask {
                 def command = "../gradlew :modules:${key}:${autoPublishAllExt.phoneCommand} -x lint --daemon"
                 if (defaultVersion != "" && flavor != "") {
                     command = "../gradlew :modules:${key}:${autoPublishAllExt.phoneCommand} -Pversion=${defaultVersion} -Pflavor=${flavor} -x lint --daemon"
-                } else if (defaultVersion != ""){
+                } else if (defaultVersion != "") {
                     command = "../gradlew :modules:${key}:${autoPublishAllExt.phoneCommand} -Pversion=${defaultVersion} -x lint --daemon"
                 }
                 project.exec { execSpec ->
@@ -66,7 +66,7 @@ class AutoPublishPhoneAllTask extends DefaultTask {
                 def command = "../gradlew :modules:${key}:${autoPublishAllExt.phoneCommand} -x lint --daemon"
                 if (defaultVersion != "" && flavor != "") {
                     command = "../gradlew :modules:${key}:${autoPublishAllExt.phoneCommand} -Pversion=${defaultVersion} -Pflavor=${flavor} -x lint --daemon"
-                } else if (defaultVersion != ""){
+                } else if (defaultVersion != "") {
                     command = "../gradlew :modules:${key}:${autoPublishAllExt.phoneCommand} -Pversion=${defaultVersion} -x lint --daemon"
                 }
                 project.exec { execSpec ->
@@ -82,7 +82,7 @@ class AutoPublishPhoneAllTask extends DefaultTask {
                 def command = "../gradlew :modules:${key}:${autoPublishAllExt.phoneCommand} -x lint --daemon"
                 if (defaultVersion != "" && flavor != "") {
                     command = "../gradlew :modules:${key}:${autoPublishAllExt.phoneCommand} -Pversion=${defaultVersion} -Pflavor=${flavor} -x lint --daemon"
-                } else if (defaultVersion != ""){
+                } else if (defaultVersion != "") {
                     command = "../gradlew :modules:${key}:${autoPublishAllExt.phoneCommand} -Pversion=${defaultVersion} -x lint --daemon"
                 }
                 project.exec { execSpec ->
@@ -93,6 +93,7 @@ class AutoPublishPhoneAllTask extends DefaultTask {
             }
         }
         gitPush()
+        getLastCommitId()
     }
 
     @Override
@@ -109,8 +110,7 @@ class AutoPublishPhoneAllTask extends DefaultTask {
     static def gitDiffLog() {
         try {
             return 'git diff --name-only HEAD~ HEAD'.execute().text.trim()
-        }
-        catch (ignored) {
+        } catch (ignored) {
             return ""
         }
     }
@@ -132,15 +132,31 @@ class AutoPublishPhoneAllTask extends DefaultTask {
         return changeModules
     }
 
-    static def gitPush(){
+    static def gitPush() {
         try {
             def p = ['sh', '-c', 'git add .'].execute()
             p.waitFor()
             p = ['sh', '-c', 'git commit -m"write versions" '].execute()
             p.waitFor()
             p = ['sh', '-c', 'git push'].execute()
+            p.waitFor()
+        } catch (ignored) {
+            return ""
         }
-        catch (ignored) {
+    }
+
+    def getLastCommitId() {
+        try {
+            def lastCommitId = ['sh', '-c', 'git rev-parse --short HEAD'].execute().text.trim()
+            def parentPath = project.path.replace(":", "/")
+            File file = new File(project.rootProject.projectDir.absolutePath + "/" + parentPath + "/" + ".glc")//git最后一次提交sort id记录文件
+            if (!file.exists()) {
+                file.createNewFile()
+            }
+            file.withWriter('UTF-8') { writer ->
+                writer.write(lastCommitId)
+            }
+        } catch(ignored) {
             return ""
         }
     }
