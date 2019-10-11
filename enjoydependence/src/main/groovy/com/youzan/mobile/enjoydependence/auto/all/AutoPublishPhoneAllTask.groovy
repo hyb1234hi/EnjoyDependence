@@ -115,6 +115,8 @@ class AutoPublishPhoneAllTask extends DefaultTask {
                 glcFile.withReader('UTF-8') { reader ->
                     reader.eachLine {
                         lastCommitId = it
+                        println(lastCommitId + " 1111")
+                        return
                     }
                 }
             }
