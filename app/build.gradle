@@ -32,7 +32,7 @@ dependencies {
 }
 
 autoPublishAll {
-    phoneCommand = "AutoPublishPhone"
+    padCommand = "AutoPublishPad"
     firstPriority = ["lib_common"]
     excludeModules = ["app", "enjoydependence", "modules"]
 }

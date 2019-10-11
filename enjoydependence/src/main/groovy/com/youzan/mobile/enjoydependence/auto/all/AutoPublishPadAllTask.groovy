@@ -27,8 +27,14 @@ class AutoPublishPadAllTask extends DefaultTask {
                     projectMap.put(pro.name, pro)
                 }
             } else {
-                if (!autoPublishAllExt.excludeModules.contains(pro.name) && gitDiffModule().contains(pro.name)) {
-                    projectMap.put(pro.name, pro)
+                if (gitDiffModule().size() == 1 && gitDiffModule()[0] == "-1") {
+                    if (!autoPublishAllExt.excludeModules.contains(pro.name)) {
+                        projectMap.put(pro.name, pro)
+                    }
+                } else {
+                    if (!autoPublishAllExt.excludeModules.contains(pro.name) && gitDiffModule().contains(pro.name)) {
+                        projectMap.put(pro.name, pro)
+                    }
                 }
             }
         }
@@ -116,18 +122,32 @@ class AutoPublishPadAllTask extends DefaultTask {
     }
 
     //获取本次提交记录
-    static def gitDiffLog() {
+    def gitDiffLog() {
         try {
-            return 'git diff --name-only HEAD~ HEAD'.execute().text.trim()
-        }
-        catch (ignored) {
+            File glcFile = new File(project.rootProject.projectDir.absolutePath + "/" + ".glc")//git最后一次提交sort id记录文件
+            if (glcFile.exists()) {
+                glcFile.withReader('UTF-8') { reader ->
+                    def lastCommitId = reader.text.trim()
+                    if (lastCommitId == "") {
+                        return ""
+                    } else {
+                        return "git diff --name-only ${lastCommitId}".execute().text.trim()
+                    }
+                }
+            } else {
+                return ""
+            }
+        } catch (ignored) {
             return ""
         }
     }
 
     //获取本次提交涉及的module
-    static def gitDiffModule() {
+    def gitDiffModule() {
         def changeModules = []
+        if (gitDiffLog() == "") {
+            return ["-1"]
+        }
         gitDiffLog().eachLine {
             if (it.contains("modules") && !it.contains("version.properties")) {
                 String[] temp = it.split("/")

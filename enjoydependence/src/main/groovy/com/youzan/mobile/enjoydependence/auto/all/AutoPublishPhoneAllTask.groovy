@@ -16,14 +16,23 @@ class AutoPublishPhoneAllTask extends DefaultTask {
     @TaskAction
     void publishAll() {
         AutoPublishAllExt autoPublishAllExt = project.extensions.findByType(AutoPublishAllExt.class)
+        if (project.hasProperty("ignore") && project.ignore != "unspecified") {
+            ignore = Boolean.valueOf(project.ignore)
+        }
         project.rootProject.subprojects.each { pro ->
-            if (gitDiffModule().size() == 1 && gitDiffModule()[0] == "-1") {
+            if (ignore) {
                 if (!autoPublishAllExt.excludeModules.contains(pro.name)) {
                     projectMap.put(pro.name, pro)
                 }
             } else {
-                if (!autoPublishAllExt.excludeModules.contains(pro.name) && gitDiffModule().contains(pro.name)) {
-                    projectMap.put(pro.name, pro)
+                if (gitDiffModule().size() == 1 && gitDiffModule()[0] == "-1") {
+                    if (!autoPublishAllExt.excludeModules.contains(pro.name)) {
+                        projectMap.put(pro.name, pro)
+                    }
+                } else {
+                    if (!autoPublishAllExt.excludeModules.contains(pro.name) && gitDiffModule().contains(pro.name)) {
+                        projectMap.put(pro.name, pro)
+                    }
                 }
             }
         }
@@ -98,8 +107,12 @@ class AutoPublishPhoneAllTask extends DefaultTask {
                 }
             }
         }
-        gitPush()
-        getLastCommitId()
+
+        //有文件变更的lib module 才执行git push
+        if (projectMap.size() > 0) {
+            gitPush()
+            getLastCommitId()
+        }
     }
 
     @Override
@@ -115,7 +128,8 @@ class AutoPublishPhoneAllTask extends DefaultTask {
     //获取本次提交记录
     def gitDiffLog() {
         try {
-            File glcFile = new File(project.rootProject.projectDir.absolutePath + "/" + ".glc")//git最后一次提交sort id记录文件
+            File glcFile = new File(project.rootProject.projectDir.absolutePath + "/" + ".glc")
+//git最后一次提交sort id记录文件
             if (glcFile.exists()) {
                 glcFile.withReader('UTF-8') { reader ->
                     def lastCommitId = reader.text.trim()
@@ -140,7 +154,7 @@ class AutoPublishPhoneAllTask extends DefaultTask {
             return ["-1"]
         }
         gitDiffLog().eachLine {
-            if (it.contains("modules")) {
+            if (it.contains("modules") && !it.contains("version.properties")) {
                 String[] temp = it.split("/")
                 if (temp.size() > 2) {
                     String moduleName = temp[1]
@@ -153,7 +167,7 @@ class AutoPublishPhoneAllTask extends DefaultTask {
         return changeModules
     }
 
-    static def gitPush() {
+    def gitPush() {
         try {
             def p = ['sh', '-c', 'git add .'].execute()
             p.waitFor()
@@ -169,7 +183,8 @@ class AutoPublishPhoneAllTask extends DefaultTask {
     def getLastCommitId() {
         try {
             def lastCommitId = ['sh', '-c', 'git rev-parse --short HEAD'].execute().text.trim()
-            File glcFile = new File(project.rootProject.projectDir.absolutePath + "/" + ".glc")//git最后一次提交sort id记录文件
+            File glcFile = new File(project.rootProject.projectDir.absolutePath + "/" + ".glc")
+//git最后一次提交sort id记录文件
             if (!glcFile.exists()) {
                 glcFile.createNewFile()
             }
