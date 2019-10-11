@@ -113,6 +113,7 @@ class AutoPublishPhoneAllTask extends DefaultTask {
             def lastCommitId = ""
             if (glcFile.exists()) {
                 glcFile.withReader('UTF-8') { reader ->
+                    println(reader.text.trim()+" 333")
                     reader.eachLine {
                         lastCommitId = it
                         println(lastCommitId + " 1111")
