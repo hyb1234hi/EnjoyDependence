@@ -93,7 +93,7 @@ class AutoPublishPhoneAllTask extends DefaultTask {
             }
         }
         gitPush()
-        getLastCommitId(project)
+        getLastCommitId()
     }
 
     @Override
@@ -107,16 +107,30 @@ class AutoPublishPhoneAllTask extends DefaultTask {
     }
 
     //获取本次提交记录
-    static def gitDiffLog() {
+    def gitDiffLog() {
         try {
-            return 'git diff --name-only HEAD~ HEAD'.execute().text.trim()
+            File glcFile = new File(project.rootProject.projectDir.absolutePath + "/" + ".glc")//git最后一次提交sort id记录文件
+            def lastCommitId = ""
+            if (glcFile.exists()) {
+                glcFile.withReader('UTF-8') { reader ->
+                    reader.eachLine {
+                        lastCommitId = it
+                    }
+                }
+            }
+            if (lastCommitId == "") {
+                return ""
+            } else {
+                println('git diff --name-only s%'[lastCommitId].execute().text.trim())
+                return 'git diff --name-only s%'[lastCommitId].execute().text.trim()
+            }
         } catch (ignored) {
             return ""
         }
     }
 
     //获取本次提交涉及的module
-    static def gitDiffModule() {
+    def gitDiffModule() {
         def changeModules = []
         gitDiffLog().eachLine {
             if (it.contains("modules")) {
@@ -136,7 +150,7 @@ class AutoPublishPhoneAllTask extends DefaultTask {
         try {
             def p = ['sh', '-c', 'git add .'].execute()
             p.waitFor()
-            p = ['sh', '-c', 'git commit -m"write versions" '].execute()
+            p = ['sh', '-c', 'git commit -m"auto write versions" '].execute()
             p.waitFor()
             p = ['sh', '-c', 'git push'].execute()
             p.waitFor()
@@ -145,16 +159,14 @@ class AutoPublishPhoneAllTask extends DefaultTask {
         }
     }
 
-    def getLastCommitId(Project project) {
+    def getLastCommitId() {
         try {
             def lastCommitId = ['sh', '-c', 'git rev-parse --short HEAD'].execute().text.trim()
-            def parentPath = project.path.replace(":", "/")
-            File file = new File(project.rootProject.projectDir.absolutePath + "/" + parentPath + "/" + ".glc")//git最后一次提交sort id记录文件
-            println("22222  " + file.absolutePath)
-            if (!file.exists()) {
-                file.createNewFile()
+            File glcFile = new File(project.rootProject.projectDir.absolutePath + "/" + ".glc")//git最后一次提交sort id记录文件
+            if (!glcFile.exists()) {
+                glcFile.createNewFile()
             }
-            file.withWriter('UTF-8') { writer ->
+            glcFile.withWriter('UTF-8') { writer ->
                 writer.write(lastCommitId)
             }
         } catch(ignored) {
