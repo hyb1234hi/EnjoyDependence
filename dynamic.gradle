@@ -27,7 +27,9 @@ dynamicDependency {
 
     lib_common {
         //如果是true，则使用本地模块作为依赖参与编译，否则使用下面的配置获取远程的构件作为依赖参与编译
-        debuggable = !chooseMap.get("lib_common", false)
+        //支持./gradlew AutoPublishPadAll -PaarBuild="true"强制采用aar依赖
+        //默认情况下project.aarBuild = false,所以会根据后面的值确定是否采用aar依赖
+        debuggable =  project.aarBuild ? !project.aarBuild : !chooseMap.get("lib_common", false)
 //        flavor = "pad"
         groupId = "com.youzan.mobile"
         artifactId = "lib_common" // 默认使用模块的名称作为其值
@@ -35,7 +37,7 @@ dynamicDependency {
     }
     liba {
         //如果是true，则使用本地模块作为依赖参与编译，否则使用下面的配置获取远程的构件作为依赖参与编译
-        debuggable = !chooseMap.get("liba", false)
+        debuggable = project.aarBuild ? !project.aarBuild : !chooseMap.get("liba", false)
 //        flavor = "pad"
         groupId = "com.youzan.mobile"
         artifactId = "liba" // 默认使用模块的名称作为其值
@@ -43,7 +45,7 @@ dynamicDependency {
     }
     libb {
         //如果是true，则使用本地模块作为依赖参与编译，否则使用下面的配置获取远程的构件作为依赖参与编译
-        debuggable = !chooseMap.get("libb", false)
+        debuggable = project.aarBuild ? !project.aarBuild : !chooseMap.get("libb", false)
 //        flavor = "pad"
         groupId = "com.youzan.mobile"
         artifactId = "libb" // 默认使用模块的名称作为其值
