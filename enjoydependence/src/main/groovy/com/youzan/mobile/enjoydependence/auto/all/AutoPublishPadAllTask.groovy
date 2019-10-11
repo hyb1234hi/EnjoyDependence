@@ -159,6 +159,28 @@ class AutoPublishPadAllTask extends DefaultTask {
                 }
             }
         }
+        //发布release包需要先统计到snapshot包有哪些
+        if (!defaultVersion.contains("snapshot") || !defaultVersion.contains("SNAPSHOT")) {
+            File rootVersionFile = new File(project.rootProject.projectDir.absolutePath + "/" + "version.properties")
+            if (rootVersionFile.exists()) {
+                rootVersionFile.withReader('UTF-8') { reader ->
+                    reader.eachLine {
+                        String[] temp = it.split("=")
+                        String projectName = ""
+                        String tempVersion = ""
+                        if (temp.size() == 2) {
+                            projectName = temp[0]
+                            tempVersion = temp[1]
+                        }
+                        if (tempVersion.contains("snapshot") || tempVersion.contains("SNAPSHOT")) {
+                            if (!changeModules.contains(projectName)) {
+                                changeModules.add(projectName)
+                            }
+                        }
+                    }
+                }
+            }
+        }
         return changeModules
     }
 }
