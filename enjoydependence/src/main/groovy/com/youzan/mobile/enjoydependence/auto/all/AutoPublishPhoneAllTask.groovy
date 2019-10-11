@@ -113,19 +113,14 @@ class AutoPublishPhoneAllTask extends DefaultTask {
             def lastCommitId = ""
             if (glcFile.exists()) {
                 glcFile.withReader('UTF-8') { reader ->
-                    println(reader.text.trim()+" 333")
-                    reader.eachLine {
-                        lastCommitId = it
-                        println(lastCommitId + " 1111")
-                        return
+                    lastCommitId = reader.text.trim()
+                    if (lastCommitId == "") {
+                        return ""
+                    } else {
+                        println('git diff --name-only s%'[lastCommitId].execute().text.trim() + "22222")
+                        return 'git diff --name-only s%'[lastCommitId].execute().text.trim()
                     }
                 }
-            }
-            if (lastCommitId == "") {
-                return ""
-            } else {
-                println('git diff --name-only s%'[lastCommitId].execute().text.trim() + "22222")
-                return 'git diff --name-only s%'[lastCommitId].execute().text.trim()
             }
         } catch (ignored) {
             return ""
