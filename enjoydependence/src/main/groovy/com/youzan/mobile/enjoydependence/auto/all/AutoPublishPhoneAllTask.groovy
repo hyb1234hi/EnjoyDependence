@@ -92,6 +92,7 @@ class AutoPublishPhoneAllTask extends DefaultTask {
                 }
             }
         }
+        gitPush()
     }
 
     @Override
@@ -129,5 +130,18 @@ class AutoPublishPhoneAllTask extends DefaultTask {
             }
         }
         return changeModules
+    }
+
+    static def gitPush(){
+        try {
+            println("22222")
+            def p = ['sh', '-c', 'git add .'].execute()
+            p.waitFor()
+            p = ['sh', '-c', 'git commit -m"write versions" '].execute()
+            println("33333")
+        }
+        catch (ignored) {
+            return ""
+        }
     }
 }
