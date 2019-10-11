@@ -134,11 +134,11 @@ class AutoPublishPhoneAllTask extends DefaultTask {
 
     static def gitPush(){
         try {
-            println("22222")
             def p = ['sh', '-c', 'git add .'].execute()
             p.waitFor()
             p = ['sh', '-c', 'git commit -m"write versions" '].execute()
-            println("33333")
+            p.waitFor()
+            p = ['sh', '-c', 'git push'].execute()
         }
         catch (ignored) {
             return ""
