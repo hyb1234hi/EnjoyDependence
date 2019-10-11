@@ -110,11 +110,12 @@ class AutoPublishPhoneAllTask extends DefaultTask {
     def gitDiffLog() {
         try {
             File glcFile = new File(project.rootProject.projectDir.absolutePath + "/" + ".glc")//git最后一次提交sort id记录文件
-            def lastCommitId = ""
             if (glcFile.exists()) {
                 glcFile.withReader('UTF-8') { reader ->
-                    lastCommitId = reader.text.trim()
+                    def lastCommitId = reader.text.trim()
+                    println(lastCommitId + " 3333")
                     if (lastCommitId == "") {
+                        println(lastCommitId + " 111111")
                         return ""
                     } else {
                         println('git diff --name-only s%'[lastCommitId].execute().text.trim() + "22222")
