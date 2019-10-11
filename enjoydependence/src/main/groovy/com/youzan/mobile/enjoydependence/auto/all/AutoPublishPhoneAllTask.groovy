@@ -11,6 +11,7 @@ class AutoPublishPhoneAllTask extends DefaultTask {
 
     def defaultVersion = ""
     def flavor = ""
+    boolean ignore = false
     Map<String, Project> projectMap = new HashMap<String, Project>()
 
     @TaskAction
