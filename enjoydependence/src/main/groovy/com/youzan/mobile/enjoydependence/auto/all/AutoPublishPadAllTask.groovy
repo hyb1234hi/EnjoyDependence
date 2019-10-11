@@ -113,7 +113,7 @@ class AutoPublishPadAllTask extends DefaultTask {
 
     @Override
     String getGroup() {
-        return "CustomAuto"
+        return "enjoyDependence"
     }
 
     @Override
