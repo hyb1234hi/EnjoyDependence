@@ -2,6 +2,14 @@ import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
 dynamicDependency {
+    Properties localProperties = new Properties()
+    InputStream localStream = project.rootProject.file('local.properties').newDataInputStream()
+    localProperties.load(localStream)
+    if (!Boolean.valueOf(localProperties.getProperty("aarBuild"))) {
+        if (!project.hasProperty("aarBuild") || project.aarBuild == "unspecified" || !Boolean.valueOf(project.aarBuild)) {
+            return
+        }
+    }
     Properties properties = new Properties()
     InputStream inputStream = project.rootProject.file('version.properties').newDataInputStream()
     properties.load(inputStream)
