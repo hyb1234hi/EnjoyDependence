@@ -116,8 +116,8 @@ class AutoPublishPhoneAllTask extends DefaultTask {
                     if (lastCommitId == "") {
                         return ""
                     } else {
-                        println('git diff --name-only '+ lastCommitId.execute().text.trim() + "22222")
-                        return 'git diff --name-only ' + lastCommitId.execute().text.trim()
+                        println("git diff --name-only ${lastCommitId}".execute().text.trim() + "22222")
+                        return "git diff --name-only ${lastCommitId}".execute().text.trim()
                     }
                 }
             }
