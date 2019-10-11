@@ -17,8 +17,14 @@ class AutoPublishPhoneAllTask extends DefaultTask {
     void publishAll() {
         AutoPublishAllExt autoPublishAllExt = project.extensions.findByType(AutoPublishAllExt.class)
         project.rootProject.subprojects.each { pro ->
-            if (!autoPublishAllExt.excludeModules.contains(pro.name) && gitDiffModule().contains(pro.name)) {
-                projectMap.put(pro.name, pro)
+            if (gitDiffModule().size() == 1 && gitDiffModule()[0] == "-1") {
+                if (!autoPublishAllExt.excludeModules.contains(pro.name)) {
+                    projectMap.put(pro.name, pro)
+                }
+            } else {
+                if (!autoPublishAllExt.excludeModules.contains(pro.name) && gitDiffModule().contains(pro.name)) {
+                    projectMap.put(pro.name, pro)
+                }
             }
         }
         if (project.hasProperty("version") && project.version != "unspecified") {
@@ -116,10 +122,11 @@ class AutoPublishPhoneAllTask extends DefaultTask {
                     if (lastCommitId == "") {
                         return ""
                     } else {
-                        println("git diff --name-only ${lastCommitId}".execute().text.trim() + "22222")
                         return "git diff --name-only ${lastCommitId}".execute().text.trim()
                     }
                 }
+            } else {
+                return ""
             }
         } catch (ignored) {
             return ""
@@ -129,6 +136,9 @@ class AutoPublishPhoneAllTask extends DefaultTask {
     //获取本次提交涉及的module
     def gitDiffModule() {
         def changeModules = []
+        if (gitDiffLog() == "") {
+            return ["-1"]
+        }
         gitDiffLog().eachLine {
             if (it.contains("modules")) {
                 String[] temp = it.split("/")
@@ -166,7 +176,7 @@ class AutoPublishPhoneAllTask extends DefaultTask {
             glcFile.withWriter('UTF-8') { writer ->
                 writer.write(lastCommitId)
             }
-        } catch(ignored) {
+        } catch (ignored) {
             return ""
         }
     }
