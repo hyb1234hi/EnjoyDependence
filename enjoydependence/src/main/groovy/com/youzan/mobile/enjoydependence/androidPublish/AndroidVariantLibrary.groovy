@@ -140,7 +140,9 @@ final class AndroidVariantLibrary implements SoftwareComponentInternal {
         Set<ModuleDependency> getDependencies() {
             if (dependencies == null) {
                 def runtimeElements = publishConfiguration.publishConfig + JavaPlugin.RUNTIME_ELEMENTS_CONFIGURATION_NAME.capitalize()
-                dependencies = configurations.getByName(runtimeElements).getIncoming().getDependencies().withType(ModuleDependency)
+                dependencies = configurations.getByName(runtimeElements).getIncoming().getDependencies().withType(ModuleDependency).matching { ModuleDependency moduleDependency ->
+                    return !moduleDependency.name.contains("lib_common") && !moduleDependency.name.contains("module")
+                }
             }
             return dependencies
         }
