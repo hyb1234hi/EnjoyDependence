@@ -35,6 +35,6 @@ autoPublishAll {
     phoneCommand = "AutoPublishPad"
     firstPriority = ["lib_common"]
     excludeModules = ["app", "enjoydependence", "modules"]
-    glcParentPath = "./"
+    glcParentPath = "."
 }
 
