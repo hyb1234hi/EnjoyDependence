@@ -12,11 +12,12 @@ class AutoPublishPhoneAllTask extends DefaultTask {
     def defaultVersion = ""
     def flavor = ""
     boolean ignore = false
+    AutoPublishAllExt autoPublishAllExt
     Map<String, Project> projectMap = new HashMap<String, Project>()
 
     @TaskAction
     void publishAll() {
-        AutoPublishAllExt autoPublishAllExt = project.extensions.findByType(AutoPublishAllExt.class)
+        autoPublishAllExt = project.extensions.findByType(AutoPublishAllExt.class)
         if (project.hasProperty("ignore") && project.ignore != "unspecified") {
             ignore = Boolean.valueOf(project.ignore)
         }
@@ -129,7 +130,7 @@ class AutoPublishPhoneAllTask extends DefaultTask {
     //获取本次提交记录
     def gitDiffLog() {
         try {
-            File glcFile = new File(project.rootProject.projectDir.absolutePath + "/" + ".glc")
+            File glcFile = new File(autoPublishAllExt.glcParentPath  + "/" + ".glc")
 //git最后一次提交sort id记录文件
             if (glcFile.exists()) {
                 glcFile.withReader('UTF-8') { reader ->
@@ -184,7 +185,7 @@ class AutoPublishPhoneAllTask extends DefaultTask {
     def getLastCommitId() {
         try {
             def lastCommitId = ['sh', '-c', 'git rev-parse --short HEAD'].execute().text.trim()
-            File glcFile = new File(project.rootProject.projectDir.absolutePath + "/" + ".glc")
+            File glcFile = new File(autoPublishAllExt.glcParentPath + "/" + ".glc")
 //git最后一次提交sort id记录文件
             if (!glcFile.exists()) {
                 glcFile.createNewFile()
