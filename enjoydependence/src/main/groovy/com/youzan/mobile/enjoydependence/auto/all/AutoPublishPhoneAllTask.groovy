@@ -21,6 +21,13 @@ class AutoPublishPhoneAllTask extends DefaultTask {
         if (project.hasProperty("ignore") && project.ignore != "unspecified") {
             ignore = Boolean.valueOf(project.ignore)
         }
+        if (project.hasProperty("version") && project.version != "unspecified") {
+            defaultVersion = project.version
+        }
+        if (project.hasProperty("flavor") && project.flavor != "unspecified") {
+            flavor = project.flavor
+        }
+        projectMap.clear()
         project.rootProject.subprojects.each { pro ->
             if (ignore) {
                 if (!autoPublishAllExt.excludeModules.contains(pro.name)) {
@@ -38,11 +45,9 @@ class AutoPublishPhoneAllTask extends DefaultTask {
                 }
             }
         }
-        if (project.hasProperty("version") && project.version != "unspecified") {
-            defaultVersion = project.version
-        }
-        if (project.hasProperty("flavor") && project.flavor != "unspecified") {
-            flavor = project.flavor
+
+        projectMap.each { key, value ->
+            println("need build modules:" + key)
         }
 
         projectMap.each { key, value ->
@@ -112,8 +117,8 @@ class AutoPublishPhoneAllTask extends DefaultTask {
 
         //有文件变更的lib module 才执行git push
         if (projectMap.size() > 0) {
-            gitPush()
-            getLastCommitId()
+//            gitPush()
+//            getLastCommitId()
         }
     }
 
@@ -130,11 +135,12 @@ class AutoPublishPhoneAllTask extends DefaultTask {
     //获取本次提交记录
     def gitDiffLog() {
         try {
-            File glcFile = new File(autoPublishAllExt.glcParentPath  + "/" + ".glc")
+            File glcFile = new File(autoPublishAllExt.glcParentPath + "/" + ".glc")
 //git最后一次提交sort id记录文件
             if (glcFile.exists()) {
                 glcFile.withReader('UTF-8') { reader ->
                     def lastCommitId = reader.text.trim()
+                    println("---------------lastCommitId: ${lastCommitId}----------------")
                     if (lastCommitId == "") {
                         return ""
                     } else {
@@ -142,6 +148,7 @@ class AutoPublishPhoneAllTask extends DefaultTask {
                     }
                 }
             } else {
+                println("---------------glcPath: ${glcFile.absolutePath}----------------")
                 return ""
             }
         } catch (ignored) {
@@ -162,6 +169,30 @@ class AutoPublishPhoneAllTask extends DefaultTask {
                     String moduleName = temp[1]
                     if (!changeModules.contains(moduleName)) {
                         changeModules.add(moduleName)
+                    }
+                }
+            }
+        }
+        //发布release包需要先统计到snapshot包有哪些
+        println("defaultVersion：${defaultVersion}")
+        if (!defaultVersion.contains("snapshot") && !defaultVersion.contains("SNAPSHOT")) {
+            println("---------------start add snapshot change----------------")
+            File rootVersionFile = new File(project.rootProject.projectDir.absolutePath + "/" + "version.properties")
+            if (rootVersionFile.exists()) {
+                rootVersionFile.withReader('UTF-8') { reader ->
+                    reader.eachLine {
+                        String[] temp = it.split("=")
+                        String projectName = ""
+                        String tempVersion = ""
+                        if (temp.size() == 2) {
+                            projectName = temp[0]
+                            tempVersion = temp[1]
+                        }
+                        if (tempVersion.contains("snapshot") || tempVersion.contains("SNAPSHOT")) {
+                            if (!changeModules.contains(projectName)) {
+                                changeModules.add(projectName)
+                            }
+                        }
                     }
                 }
             }

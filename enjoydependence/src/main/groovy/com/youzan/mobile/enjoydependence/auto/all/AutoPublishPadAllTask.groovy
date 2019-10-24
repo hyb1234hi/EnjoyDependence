@@ -13,14 +13,22 @@ class AutoPublishPadAllTask extends DefaultTask {
     def defaultVersion = ""
     def flavor = ""
     boolean ignore = false
+    AutoPublishAllExt autoPublishAllExt
     Map<String, Project> projectMap = new HashMap<String, Project>()
 
     @TaskAction
     void publishAll() {
-        AutoPublishAllExt autoPublishAllExt = project.extensions.findByType(AutoPublishAllExt.class)
+        autoPublishAllExt = project.extensions.findByType(AutoPublishAllExt.class)
         if (project.hasProperty("ignore") && project.ignore != "unspecified") {
             ignore = Boolean.valueOf(project.ignore)
         }
+        if (project.hasProperty("version") && project.version != "unspecified") {
+            defaultVersion = project.version
+        }
+        if (project.hasProperty("flavor") && project.flavor != "unspecified") {
+            flavor = project.flavor
+        }
+        projectMap.clear()
         project.rootProject.subprojects.each { pro ->
             if (ignore) {
                 if (!autoPublishAllExt.excludeModules.contains(pro.name)) {
@@ -38,11 +46,9 @@ class AutoPublishPadAllTask extends DefaultTask {
                 }
             }
         }
-        if (project.hasProperty("version") && project.version != "unspecified") {
-            defaultVersion = project.version
-        }
-        if (project.hasProperty("flavor") && project.flavor != "unspecified") {
-            flavor = project.flavor
+
+        projectMap.each { key, value ->
+            println("need build modules:" + key)
         }
 
         projectMap.each { key, value ->
@@ -124,10 +130,11 @@ class AutoPublishPadAllTask extends DefaultTask {
     //获取本次提交记录
     def gitDiffLog() {
         try {
-            File glcFile = new File(project.rootProject.projectDir.absolutePath + "/" + ".glc")//git最后一次提交sort id记录文件
+            File glcFile = new File(autoPublishAllExt.glcParentPath + "/" + ".glc")//git最后一次提交sort id记录文件
             if (glcFile.exists()) {
                 glcFile.withReader('UTF-8') { reader ->
                     def lastCommitId = reader.text.trim()
+                    println("---------------lastCommitId: ${lastCommitId}----------------")
                     if (lastCommitId == "") {
                         return ""
                     } else {
@@ -135,6 +142,7 @@ class AutoPublishPadAllTask extends DefaultTask {
                     }
                 }
             } else {
+                println("---------------glcPath: ${glcFile.absolutePath}----------------")
                 return ""
             }
         } catch (ignored) {
@@ -160,7 +168,9 @@ class AutoPublishPadAllTask extends DefaultTask {
             }
         }
         //发布release包需要先统计到snapshot包有哪些
-        if (!defaultVersion.contains("snapshot") || !defaultVersion.contains("SNAPSHOT")) {
+        println("defaultVersion：${defaultVersion}")
+        if (!defaultVersion.contains("snapshot") && !defaultVersion.contains("SNAPSHOT")) {
+            println("---------------start add snapshot change----------------")
             File rootVersionFile = new File(project.rootProject.projectDir.absolutePath + "/" + "version.properties")
             if (rootVersionFile.exists()) {
                 rootVersionFile.withReader('UTF-8') { reader ->
