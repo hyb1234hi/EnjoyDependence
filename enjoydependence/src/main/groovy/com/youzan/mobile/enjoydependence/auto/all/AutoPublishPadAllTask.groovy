@@ -13,6 +13,7 @@ class AutoPublishPadAllTask extends DefaultTask {
     def defaultVersion = ""
     def flavor = ""
     boolean ignore = false
+    boolean  aarBuild = false
     AutoPublishAllExt autoPublishAllExt
     Map<String, Project> projectMap = new HashMap<String, Project>()
 
@@ -27,6 +28,9 @@ class AutoPublishPadAllTask extends DefaultTask {
         }
         if (project.hasProperty("flavor") && project.flavor != "unspecified") {
             flavor = project.flavor
+        }
+        if (project.hasProperty("aarBuild") && project.aarBuild != "unspecified") {
+            aarBuild = Boolean.valueOf(project.aarBuild)
         }
         projectMap.clear()
         project.rootProject.subprojects.each { pro ->
@@ -54,11 +58,11 @@ class AutoPublishPadAllTask extends DefaultTask {
         projectMap.each { key, value ->
             if (autoPublishAllExt.firstPriority.contains(key)) {
                 println("---------------AutoBuild FirstPriority ${key}----------------")
-                def command = "../gradlew :modules:${key}:${autoPublishAllExt.padCommand} -x lint --daemon"
+                def command = "../gradlew :modules:${key}:${autoPublishAllExt.padCommand} -PaarBuild=${aarBuild} -x lint"
                 if (defaultVersion != "" && flavor != "") {
-                    command = "../gradlew :modules:${key}:${autoPublishAllExt.padCommand} -Pversion=${defaultVersion} -Pflavor=${flavor} -x lint --daemon"
+                    command = "../gradlew :modules:${key}:${autoPublishAllExt.padCommand} -Pversion=${defaultVersion} -Pflavor=${flavor} -PaarBuild=${aarBuild} -x lint"
                 } else if (defaultVersion != "") {
-                    command = "../gradlew :modules:${key}:${autoPublishAllExt.padCommand} -Pversion=${defaultVersion} -x lint --daemon"
+                    command = "../gradlew :modules:${key}:${autoPublishAllExt.padCommand} -Pversion=${defaultVersion} -PaarBuild=${aarBuild} -x lint"
                 }
                 project.exec { execSpec ->
                     //配置闭包的内容
@@ -70,11 +74,11 @@ class AutoPublishPadAllTask extends DefaultTask {
         projectMap.each { key, value ->
             if (autoPublishAllExt.secondPriority.contains(key)) {
                 println("---------------AutoBuild SecondPriority ${key}----------------")
-                def command = "../gradlew :modules:${key}:${autoPublishAllExt.padCommand} -x lint --daemon"
+                def command = "../gradlew :modules:${key}:${autoPublishAllExt.padCommand} -x lint"
                 if (defaultVersion != "" && flavor != "") {
-                    command = "../gradlew :modules:${key}:${autoPublishAllExt.padCommand} -Pversion=${defaultVersion} -Pflavor=${flavor} -x lint --daemon"
+                    command = "../gradlew :modules:${key}:${autoPublishAllExt.padCommand} -Pversion=${defaultVersion} -Pflavor=${flavor} -PaarBuild=${aarBuild} -x lint"
                 } else if (defaultVersion != "") {
-                    command = "../gradlew :modules:${key}:${autoPublishAllExt.padCommand} -Pversion=${defaultVersion} -x lint --daemon"
+                    command = "../gradlew :modules:${key}:${autoPublishAllExt.padCommand} -Pversion=${defaultVersion} -PaarBuild=${aarBuild} -x lint"
                 }
                 project.exec { execSpec ->
                     //配置闭包的内容
@@ -86,11 +90,11 @@ class AutoPublishPadAllTask extends DefaultTask {
         projectMap.each { key, value ->
             if (autoPublishAllExt.thirdPriority.contains(key)) {
                 println("---------------AutoBuild ThirdPriority ${key}----------------")
-                def command = "../gradlew :modules:${key}:${autoPublishAllExt.padCommand} -x lint --daemon"
+                def command = "../gradlew :modules:${key}:${autoPublishAllExt.padCommand} -PaarBuild=${aarBuild} -x lint"
                 if (defaultVersion != "" && flavor != "") {
-                    command = "../gradlew :modules:${key}:${autoPublishAllExt.padCommand} -Pversion=${defaultVersion} -Pflavor=${flavor} -x lint --daemon"
+                    command = "../gradlew :modules:${key}:${autoPublishAllExt.padCommand} -Pversion=${defaultVersion} -Pflavor=${flavor} -PaarBuild=${aarBuild} -x lint"
                 } else if (defaultVersion != "") {
-                    command = "../gradlew :modules:${key}:${autoPublishAllExt.padCommand} -Pversion=${defaultVersion} -x lint --daemon"
+                    command = "../gradlew :modules:${key}:${autoPublishAllExt.padCommand} -Pversion=${defaultVersion} -PaarBuild=${aarBuild} -x lint"
                 }
                 project.exec { execSpec ->
                     //配置闭包的内容
@@ -102,11 +106,11 @@ class AutoPublishPadAllTask extends DefaultTask {
         projectMap.each { key, value ->
             if (!autoPublishAllExt.firstPriority.contains(key) && !autoPublishAllExt.secondPriority.contains(key) && !autoPublishAllExt.thirdPriority.contains(key)) {
                 println("---------------AutoBuild OtherPriority ${key}----------------")
-                def command = "../gradlew :modules:${key}:${autoPublishAllExt.padCommand} -x lint --daemon"
+                def command = "../gradlew :modules:${key}:${autoPublishAllExt.padCommand} -PaarBuild=${aarBuild} -x lint"
                 if (defaultVersion != "" && flavor != "") {
-                    command = "../gradlew :modules:${key}:${autoPublishAllExt.padCommand} -Pversion=${defaultVersion} -Pflavor=${flavor} -x lint --daemon"
+                    command = "../gradlew :modules:${key}:${autoPublishAllExt.padCommand} -Pversion=${defaultVersion} -Pflavor=${flavor} -PaarBuild=${aarBuild} -x lint"
                 } else if (defaultVersion != "") {
-                    command = "../gradlew :modules:${key}:${autoPublishAllExt.padCommand} -Pversion=${defaultVersion} -x lint --daemon"
+                    command = "../gradlew :modules:${key}:${autoPublishAllExt.padCommand} -Pversion=${defaultVersion} -PaarBuild=${aarBuild} -x lint"
                 }
                 project.exec { execSpec ->
                     //配置闭包的内容
