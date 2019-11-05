@@ -19,7 +19,7 @@ buildscript {
     }
     dependencies {
        ...
-        classpath 'com.youzan.mobile.gradle.plugin:enjoydependence:1.0.0'
+        classpath 'com.youzan.mobile.gradle.plugin:enjoydependence:x.x.x'
     }
 }
 
@@ -52,7 +52,7 @@ mavenPublish {
     releaseRepo = properties.getProperty("RELEASE_REPOSITORY_URL")
 }
 ```
-然后执行gradle命令 **publish**
+然后执行gradle命令 **publishMavenDebugAarPublicationToMavenRepository**
 
 ### 3.在各个需要进行动态依赖替换的module的build.gradle文件中添加以下配置
 
