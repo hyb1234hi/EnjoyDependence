@@ -53,10 +53,6 @@ dependencies {
     })
     testImplementation 'junit:junit:4.12'
     implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:403.12.1'
-//    implementation 'com.squareup.okhttp3:okhttp-urlconnection:403.12.1'
-    api("com.youzan.mobile:jsboost:1.0.6@aar")
-    releaseApi('com.squareup.okhttp3:okhttp-urlconnection:403.12.1')
 }
 
 def localPublishSwitch = true

@@ -1,7 +1,6 @@
 package com.youzan.mobile.enjoydependence.auto.phone
 
 import com.youzan.mobile.enjoydependence.MavenPublishExt
-import com.youzan.mobile.enjoydependence.auto.AutoPublishExt
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -24,46 +23,19 @@ class WriteVersionPhoneTask extends DefaultTask {
         println("-----------------auto write ${project.name} version: ${defaultVersion}----------------")
         if (defaultVersion != "") {
             //写入到project的version.property
-            def list = []
             def parentPath = project.path.replace(":", "/")
             File file = new File(project.rootProject.projectDir.absolutePath + "/" + parentPath + "/" + "version.properties")
-            println(file.absolutePath)
-            if (file.exists()) {
-                file.withReader('UTF-8') { reader ->
-                    reader.eachLine {
-                        if (it.contains("versionName")) {
-                            it = "versionName=${defaultVersion}"
-                            list.add(it + "\n")
-                        }
-                    }
-                }
-                file.withWriter('UTF-8') { writer ->
-                    list.each {
-                        writer.write(it)
-                    }
-                }
-            } else {
+            if (!file.exists()) {
                 file.createNewFile()
-                if (file.exists()) {
-                    file.withReader('UTF-8') { reader ->
-                        reader.eachLine {
-                            if (it.contains("versionName")) {
-                                it = "versionName=${defaultVersion}"
-                                list.add(it + "\n")
-                            }
-                        }
-                    }
-                    file.withWriter('UTF-8') { writer ->
-                        list.each {
-                            writer.write(it)
-                        }
-                    }
-                }
+            }
+            file.withWriter('UTF-8') { writer ->
+                writer.write("versionName=${defaultVersion}\n")
             }
 
-            def oldVersion = []
+            //写入到根目录的version.properties
             File rootVersionFile = new File(project.rootProject.projectDir.absolutePath + "/" + "version.properties")
             if (rootVersionFile.exists()) {
+                List<String> oldVersion = new ArrayList<>()
                 rootVersionFile.withReader('UTF-8') { reader ->
                     reader.eachLine {
                         String[] temp = it.split("=")
@@ -71,40 +43,24 @@ class WriteVersionPhoneTask extends DefaultTask {
                         if (temp.size() == 2) {
                             projectName = temp[0]
                         }
-                        if (projectName == project.name) {
+                        if (projectName != project.name) {
                             oldVersion.add(it)
                         }
                     }
                 }
 
-                oldVersion.each {
-                    String fileText = rootVersionFile.text
-                    String newVersions = fileText.replaceAll(it, "${project.name}=${defaultVersion}")
-                    rootVersionFile.write(newVersions)
+                oldVersion.add("${project.name}=${defaultVersion}")
+                oldVersion.sort()
+                rootVersionFile.withWriter('UTF-8') { writer ->
+                    oldVersion.each {
+                        writer.write(it + "\n")
+                    }
                 }
             } else {
                 rootVersionFile.createNewFile()
                 if (rootVersionFile.exists()) {
-                    rootVersionFile.withReader('UTF-8') { reader ->
-                        reader.eachLine {
-                            String[] temp = it.split("=")
-                            String projectName = ""
-                            if (temp.size() == 2) {
-                                projectName = temp[0]
-                            }
-                            if (projectName.contains(project.name)) {
-                                oldVersion.add(it)
-                            }
-                        }
-                    }
-
-                    oldVersion.each {
-                        String fileText = rootVersionFile.text
-                        String newVersions = fileText.replaceAll(it, "${project.name}=${defaultVersion}")
-                        rootVersionFile.write(newVersions)
-                    }
+                    rootVersionFile.write("${project.name}=${defaultVersion}\n")
                 }
-
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.youzan.mobile.enjoydependence
 
+import com.android.build.gradle.api.BaseVariant
 import com.youzan.mobile.enjoydependence.androidPublish.AndroidVariantLibrary
 import com.youzan.mobile.enjoydependence.androidPublish.DefaultPublishConfiguration
 import com.youzan.mobile.enjoydependence.androidPublish.VariantPublishConfiguration
@@ -52,7 +53,15 @@ class EnjoyPublishPlugin implements Plugin<Project> {
         }
         MavenPublishExt publishExt = project.extensions.create("mavenPublish", MavenPublishExt)
         project.afterEvaluate {
-            if (publishExt.version == "" || publishExt.version == null) {
+            def androidTemp =  project.extensions.findByType(LibraryExtension)
+            if (androidTemp == null) {
+                return
+            }
+            //没有配置groupId或者artifactId的认为不需要接入此插件
+            if (publishExt.groupId == null || publishExt.groupId == "") {
+                return
+            }
+            if (publishExt.artifactId == null || publishExt.artifactId == "") {
                 return
             }
             if (publishExt.localPublish) {
@@ -83,6 +92,13 @@ class EnjoyPublishPlugin implements Plugin<Project> {
                                     artifactId tempArtifactId
                                     version defaultVersion
                                 }
+                            } else if (variant.name.capitalize().endsWith("Release")) {
+                                "maven${variant.name.capitalize()}Aar"(MavenPublication) {
+                                    from project.components.findByName("android${variant.name.capitalize()}")
+                                    groupId publishExt.groupId
+                                    artifactId tempArtifactId
+                                    version defaultVersion
+                                }
                             }
                         }
                     }
@@ -103,7 +119,7 @@ class EnjoyPublishPlugin implements Plugin<Project> {
                         tempArtifactId = publishExt.artifactId + "-" + defaultFlavor
                     }
                     String urlPath
-                    if (defaultVersion.contains("SNAPSHOT")) {
+                    if (defaultVersion == null || defaultVersion.contains("SNAPSHOT")) {
                         urlPath = publishExt.snapshotRepo
                     } else {
                         urlPath = publishExt.releaseRepo
@@ -122,6 +138,13 @@ class EnjoyPublishPlugin implements Plugin<Project> {
                         def android = project.extensions.getByType(LibraryExtension)
                         android.libraryVariants.all { variant ->
                             if (variant.name.capitalize().endsWith("Debug")) {
+                                "maven${variant.name.capitalize()}Aar"(MavenPublication) {
+                                    from project.components.findByName("android${variant.name.capitalize()}")
+                                    groupId publishExt.groupId
+                                    artifactId tempArtifactId
+                                    version defaultVersion
+                                }
+                            } else if (variant.name.capitalize().endsWith("Release")) {
                                 "maven${variant.name.capitalize()}Aar"(MavenPublication) {
                                     from project.components.findByName("android${variant.name.capitalize()}")
                                     groupId publishExt.groupId

@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: '../../dynamic.gradle'
+//apply from: '../../dynamic.gradle'
 
 android {
     compileSdkVersion rootProject.ext.android.compileSdkVersion
@@ -36,12 +36,12 @@ mavenPublish {
     InputStream inputStream = project.file('local.properties').newDataInputStream()
     properties.load(inputStream)
 
-    Properties versionP = new Properties()
-    InputStream versionPStream = project.file('version.properties').newDataInputStream()
-    versionP.load(versionPStream)
+//    Properties versionP = new Properties()
+//    InputStream versionPStream = project.file('version.properties').newDataInputStream()
+//    versionP.load(versionPStream)
 
     localPublish = true
-    version = versionP.getProperty("versionName") // 如果不包含SNAPSHOT，则发布到release的仓库
+//    version = versionP.getProperty("versionName") // 如果不包含SNAPSHOT，则发布到release的仓库
     groupId = properties.getProperty("sdk_groupId")
     artifactId = properties.getProperty("sdk_artifactId")
     userName="mobile"
