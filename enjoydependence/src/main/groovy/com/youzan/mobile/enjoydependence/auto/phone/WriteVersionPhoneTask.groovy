@@ -43,7 +43,7 @@ class WriteVersionPhoneTask extends DefaultTask {
                         if (temp.size() == 2) {
                             projectName = temp[0]
                         }
-                        if (projectName != project.name) {
+                        if (projectName?.trim() && projectName != project.name) {
                             oldVersion.add(it)
                         }
                     }
