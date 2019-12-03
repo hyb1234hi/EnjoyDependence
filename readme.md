@@ -99,8 +99,8 @@ dynamicDependency {
 配置好后，sync一次即可实现依赖替换
 注意：gradle是有生命周期的，我们的配置生效时机是sync同步之后
 
-##ChangeLog
-###1.2.0
+## ChangeLog
+### 1.2.0
 1.  增加release aar发布命令
 2.  发布task是否创建的标准是：是否存在mavenPublish节点及groupId&artifactId不为null
 3.  优化版本号回写逻辑解决部分问题
