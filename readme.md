@@ -105,4 +105,7 @@ dynamicDependency {
 2.  发布task是否创建的标准是：是否存在mavenPublish节点及groupId&artifactId不为null
 3.  优化版本号回写逻辑解决部分问题
 
+### 1.2.1
+1.  修复root路径下version.properties存在两行空行的问题
+
 
