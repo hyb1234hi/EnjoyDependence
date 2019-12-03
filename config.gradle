@@ -1,3 +1,5 @@
+import groovy.json.JsonSlurper
+
 ext {
     android = [
             compileSdkVersion: 29,
@@ -7,4 +9,67 @@ ext {
             versionCode      : 1,
             versionName      : "1.0"
     ]
+
+    //获取当前分支
+    getCurrentBranch = {
+        String[] temp = file("$rootDir/.git/HEAD").text.split("heads/")
+        return temp[1]
+    }
+
+    //增加enjoy属性
+    String rootDir = project.rootProject.rootDir
+    File enjoyJson = new File(rootDir + "/enjoyManager/enjoy.json")
+    //增加enjoy属性
+    chooseMap = new HashMap<>()
+    if (enjoyJson.exists()) {
+        def jsonArray = new JsonSlurper().parse(enjoyJson)
+        jsonArray.each {
+            def branch = it["branch"]
+            def moduleInfo  = it["modules"]
+            def currentBranch = getCurrentBranch()
+            if ("${currentBranch}".contains("$branch") ) {
+                moduleInfo.each {
+                    chooseMap.put(it.name, it.choose)
+                }
+            }
+        }
+    }
+
+    //增加root local属性文件
+    localProperties = new Properties()
+    if (project.rootProject.file('local.properties').exists()) {
+        InputStream localStream = project.rootProject.file('local.properties').newDataInputStream()
+        localProperties.load(localStream)
+    }
+
+    //增加root version属性文件
+    versionProperties = new Properties()
+    InputStream inputStream = project.rootProject.file('version.properties').newDataInputStream()
+    versionProperties.load(inputStream)
+
+    //增加module目录下的version.properties属性文件
+    moduleVersion = new Properties()
+    if (project.file('version.properties').exists()) {
+        InputStream moduleVersionStream = project.file('version.properties').newDataInputStream()
+        moduleVersion.load(moduleVersionStream)
+    }
+
+    //是否源码构建
+    isSourceBuild = { projectName ->
+        if (!Boolean.valueOf(localProperties.getProperty("aarBuild"))) {
+            if (!project.hasProperty("aarBuild") || project.aarBuild == "unspecified" || !Boolean.valueOf(project.aarBuild)) {
+                return true
+            }
+        }
+        return Boolean.valueOf(project.aarBuild) ? !Boolean.valueOf(project.aarBuild) : !chooseMap.get(projectName, false)
+    }
+
+    //依赖aar的版本号
+    loadAARVersion = { projectName ->
+        if (!localProperties.getProperty(projectName)) {
+            return versionProperties.getProperty(projectName)
+        } else {
+            return localProperties.getProperty(projectName)
+        }
+    }
 }
