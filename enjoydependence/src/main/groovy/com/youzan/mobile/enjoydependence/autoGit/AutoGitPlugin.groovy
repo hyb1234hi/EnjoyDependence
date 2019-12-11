@@ -28,17 +28,18 @@ class AutoGitPlugin implements Plugin<Project> {
         }
 
         AutoGitExt autoGitExt = project.extensions.create("autoGit", AutoGitExt.class)
-        defSourceBranch = autoGitExt.source_branch
-        defTargetBranch = autoGitExt.target_branch
-        if (project.hasProperty("source_branch") && project.source_branch != "unspecified") {
-            defSourceBranch = project.source_branch
-        }
-        if (project.hasProperty("target_branch") && project.target_branch != "unspecified") {
-            defTargetBranch = project.target_branch
-        }
 
         def mrResult
         project.afterEvaluate {
+            defSourceBranch = autoGitExt.source_branch
+            defTargetBranch = autoGitExt.target_branch
+            if (project.hasProperty("source_branch") && project.source_branch != "unspecified") {
+                defSourceBranch = project.source_branch
+            }
+            if (project.hasProperty("target_branch") && project.target_branch != "unspecified") {
+                defTargetBranch = project.target_branch
+            }
+
             project.getTasks().create("autoMr", AutoCreateMrTask.class).doFirst {
                 println("-----------------auto create mr s_branch:${defSourceBranch}; t_branch:${defTargetBranch}----------------")
             }.doLast {
@@ -56,6 +57,9 @@ class AutoGitPlugin implements Plugin<Project> {
                             'title'        : "${autoGitExt.title}",
                             'description'  : "${autoGitExt.desc}"
                     ]
+                    response.success {
+                        println("ok1")
+                    }
                 }
                 println "Your request id is (${mrResult.id}) & iid is (${mrResult.iid})."
             }.doLast {
