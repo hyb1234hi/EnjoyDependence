@@ -29,8 +29,8 @@ class AutoGitPlugin implements Plugin<Project> {
 
         AutoGitExt autoGitExt = project.extensions.create("autoGit", AutoGitExt.class)
 
-        def mrResult
         project.afterEvaluate {
+            def mrResult
             defSourceBranch = autoGitExt.source_branch
             defTargetBranch = autoGitExt.target_branch
             if (project.hasProperty("source_branch") && project.source_branch != "unspecified") {
@@ -57,9 +57,6 @@ class AutoGitPlugin implements Plugin<Project> {
                             'title'        : "${autoGitExt.title}",
                             'description'  : "${autoGitExt.desc}"
                     ]
-                    response.success {
-                        println("ok1")
-                    }
                 }
                 println "Your request id is (${mrResult.id}) & iid is (${mrResult.iid})."
             }.doLast {
