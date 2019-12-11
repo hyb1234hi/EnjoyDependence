@@ -10,7 +10,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
 /**
- * 自动创建git mr
+ * 自动创建git mr & 自动accept mr
  */
 class AutoCreateMr extends DefaultTask {
 
@@ -40,10 +40,5 @@ class AutoCreateMr extends DefaultTask {
             }
             request.headers['PRIVATE-TOKEN'] = 'z7ve3ZFQgCqtvxPktuT9'
         }.put()
-
-//        print(acceptMr.toString())
-
-//        /projects/:id/merge_requests
-//        /projects/:id/merge_requests/:merge_request_iid/merge
     }
 }
