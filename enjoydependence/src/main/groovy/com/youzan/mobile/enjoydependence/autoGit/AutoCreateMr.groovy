@@ -5,7 +5,7 @@ import groovyx.net.http.FromServer
 import groovyx.net.http.HttpBuilder
 import groovyx.net.http.OkHttpBuilder
 import groovyx.net.http.*
-import static groovyx.net.http.MultipartContent.multipart
+import static groovyx.net.http.ContentTypes.JSON
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -14,34 +14,36 @@ import org.gradle.api.tasks.TaskAction
  */
 class AutoCreateMr extends DefaultTask {
 
-    class MergeResult {
-        String id;
-        String iid;
-        String state;
-        String title;
-    }
-
     @TaskAction
     void creatMergeRequest() {
-        def httpBin = OkHttpBuilder.configure {
-            request.uri = 'http://gitlab.qima-inc.com/api/v4/projects/8173/merge_requests'
+//        def mrResult = HttpBuilder.configure {
+//            request.uri = 'http://gitlab.qima-inc.com/api/v4/projects/8173/merge_requests'
+//            request.contentType = JSON[0]
+//            response.parser('application/json') { config, resp ->
+//                new JsonSlurper().parse(resp.inputStream)
+//            }
+//            request.headers['PRIVATE-TOKEN'] = 'z7ve3ZFQgCqtvxPktuT9'
+//        }.post {
+//            request.body = [
+//                    'source_branch': 'feature/automated_construction_1.2.2',
+//                    "target_branch": 'master', 'title': 'Auto Create MR'
+//            ]
+//        }
+//
+//        println "Your score for item (${mrResult.id}) was (${mrResult.iid})."
+
+        def acceptMr = HttpBuilder.configure {
+            request.uri = "http://gitlab.qima-inc.com/api/v4/projects/8173/merge_requests/${mrResult.iid}/merge"
+            request.contentType = JSON[0]
+            response.parser('application/json') { config, resp ->
+                new JsonSlurper().parse(resp.inputStream)
+            }
             request.headers['PRIVATE-TOKEN'] = 'z7ve3ZFQgCqtvxPktuT9'
-        }
+        }.put()
 
-        def result = httpBin.post {
-            request.contentType = 'multipart/form-data'
-            request.body = multipart {
-                field 'source_branch', 'feature/automated_construction_1.2.2'
-                field 'target_branch','master'
-                field 'title', "Auto Create MR"
-            }
-            request.encoder 'multipart/form-data', OkHttpEncoders.&multipart
-        }
+//        print(acceptMr.toString())
 
-        def head = httpBin.head {
-            response.success { FromServer fs, Object body ->
-                println(result.toString())
-            }
-        }
+//        /projects/:id/merge_requests
+//        /projects/:id/merge_requests/:merge_request_iid/merge
     }
 }
