@@ -19,12 +19,13 @@ class AutoGitPlugin implements Plugin<Project> {
         }
 
         AutoGitExt autoGitExt = project.extensions.create("autoGit", AutoGitExt.class)
+        def mrResult
 
         project.afterEvaluate {
             project.getTasks().create("autoMr", AutoCreateMrTask.class).doFirst {
                 println("-----------------auto create mr----------------")
             }.doLast {
-                def mrResult = HttpBuilder.configure {
+                mrResult = HttpBuilder.configure {
                     request.uri = "http://gitlab.qima-inc.com/api/v4/projects/${autoGitExt.projectId}/merge_requests"
                     request.contentType = JSON[0]
                     response.parser('application/json') { config, resp ->
