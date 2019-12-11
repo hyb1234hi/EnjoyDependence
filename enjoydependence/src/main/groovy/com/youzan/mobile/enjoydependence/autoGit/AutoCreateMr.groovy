@@ -33,7 +33,7 @@ class AutoCreateMr extends DefaultTask {
         println "Your request id is (${mrResult.id}) & iid is (${mrResult.iid})."
 
         def acceptMr = HttpBuilder.configure {
-            request.uri = "http://gitlab.qima-inc.com/api/v4/projects/8173/merge_requests/28/merge"
+            request.uri = "http://gitlab.qima-inc.com/api/v4/projects/8173/merge_requests/${mrResult.iid}/merge"
             request.contentType = JSON[0]
             response.parser('application/json') { config, resp ->
                 new JsonSlurper().parse(resp.inputStream)
