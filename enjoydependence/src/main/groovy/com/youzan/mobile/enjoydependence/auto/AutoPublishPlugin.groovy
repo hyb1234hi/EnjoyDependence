@@ -4,7 +4,6 @@ import com.youzan.mobile.enjoydependence.auto.pad.AutoPublishPadTask
 import com.youzan.mobile.enjoydependence.auto.pad.WriteVersionPadTask
 import com.youzan.mobile.enjoydependence.auto.phone.AutoPublishPhoneTask
 import com.youzan.mobile.enjoydependence.auto.phone.WriteVersionPhoneTask
-import com.youzan.mobile.enjoydependence.autoGit.AutoCreateMr
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -33,7 +32,6 @@ class AutoPublishPlugin implements Plugin<Project> {
             }) {
                 project.getTasks().create("WriteVersionPad", WriteVersionPadTask.class).dependsOn(autoPublishExt.padDependOn)
                 project.getTasks().create("AutoPublishPad", AutoPublishPadTask.class).dependsOn("WriteVersionPad")
-                project.getTasks().create("AutoCreateMr", AutoCreateMr.class)
 
                 project.getGradle().addListener(new TaskExecutionListener() {
                     @Override
