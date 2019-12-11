@@ -12,6 +12,15 @@ import static groovyx.net.http.ContentTypes.JSON
  */
 class AutoGitPlugin implements Plugin<Project> {
 
+    /**
+     * 默认源分支
+     */
+    String defSourceBranch
+    /**
+     * 默认目标分支
+     */
+    String defTargetBranch
+
     @Override
     void apply(Project project) {
         if (project.name != "app") {
@@ -19,11 +28,19 @@ class AutoGitPlugin implements Plugin<Project> {
         }
 
         AutoGitExt autoGitExt = project.extensions.create("autoGit", AutoGitExt.class)
-        def mrResult
+        defSourceBranch = autoGitExt.source_branch
+        defTargetBranch = autoGitExt.target_branch
+        if (project.hasProperty("source_branch") && project.source_branch != "unspecified") {
+            defSourceBranch = project.source_branch
+        }
+        if (project.hasProperty("target_branch") && project.target_branch != "unspecified") {
+            defTargetBranch = project.target_branch
+        }
 
+        def mrResult
         project.afterEvaluate {
             project.getTasks().create("autoMr", AutoCreateMrTask.class).doFirst {
-                println("-----------------auto create mr----------------")
+                println("-----------------auto create mr s_branch:${defSourceBranch}; t_branch:${defTargetBranch}----------------")
             }.doLast {
                 mrResult = HttpBuilder.configure {
                     request.uri = "http://gitlab.qima-inc.com/api/v4/projects/${autoGitExt.projectId}/merge_requests"
@@ -34,8 +51,8 @@ class AutoGitPlugin implements Plugin<Project> {
                     request.headers['PRIVATE-TOKEN'] = "${autoGitExt.token}"
                 }.post {
                     request.body = [
-                            'source_branch': "${autoGitExt.source_branch}",
-                            'target_branch': "${autoGitExt.target_branch}",
+                            'source_branch': "${defSourceBranch}",
+                            'target_branch': "${defTargetBranch}",
                             'title'        : "${autoGitExt.title}",
                             'description'  : "${autoGitExt.desc}"
                     ]
