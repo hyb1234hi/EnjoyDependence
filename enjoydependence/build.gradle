@@ -27,32 +27,50 @@ if (project.tasks['sourcesJar']) {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    compile gradleApi()
-    compile localGroovy()
+    implementation gradleApi()
+    implementation localGroovy()
     compileOnly "com.android.tools.build:gradle:3.1.4"
+    implementation "com.youzan.mobile:httpBuilder:1.0.4"
 }
 
+//maven-publish 配置
 publishing {
+    Properties properties = new Properties()
+    InputStream inputStream = project.file('local.properties').newDataInputStream()
+    properties.load(inputStream)
+
     repositories {
-        mavenLocal()
-    }
-}
+        def localMaven = Boolean.valueOf(properties.getProperty("localBuild"))
 
-publishing {
+        if (localMaven) {
+            mavenLocal()
+        } else {
+            maven {
+                credentials {
+                    username properties.getProperty("user_name") // 仓库发布用户名
+                    password properties.getProperty("user_pwd") // 仓库发布用户密码
+                }
+                if (properties.getProperty("sdk_version").endsWith("-SNAPSHOT")) {
+                    url properties.getProperty("SNAPSHOT_REPOSITORY_URL") // 仓库地址
+                } else {
+                    url properties.getProperty("RELEASE_REPOSITORY_URL") // 仓库地址
+                }
+            }
+        }
+    }
+
     publications {
         maven(MavenPublication) {
-            Properties properties = new Properties()
-            InputStream inputStream = project.file('local.properties').newDataInputStream()
-            properties.load(inputStream)
-
-            artifact "${project.buildDir}/libs/${project.name}.jar"
-            groupId  properties.getProperty("sdk_groupId")
+//            artifact "${project.buildDir}/libs/${project.name}.jar"
+            groupId properties.getProperty("sdk_groupId")
             artifactId properties.getProperty("sdk_artifactId")
             version properties.getProperty("sdk_version")
+            from components.java
         }
     }
 }
 
+//maven
 uploadArchives {
     repositories {
         Properties properties = new Properties()
@@ -75,7 +93,7 @@ uploadArchives {
                     }
                 }
             }
-            pom.packaging = 'aar'
+            pom.packaging = 'jar'
             pom.version = properties.getProperty("sdk_version")
             pom.groupId = properties.getProperty("sdk_groupId")
             pom.artifactId = properties.getProperty("sdk_artifactId")
