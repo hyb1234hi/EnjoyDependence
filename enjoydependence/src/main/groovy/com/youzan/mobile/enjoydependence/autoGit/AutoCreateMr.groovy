@@ -16,21 +16,21 @@ class AutoCreateMr extends DefaultTask {
 
     @TaskAction
     void creatMergeRequest() {
-//        def mrResult = HttpBuilder.configure {
-//            request.uri = 'http://gitlab.qima-inc.com/api/v4/projects/8173/merge_requests'
-//            request.contentType = JSON[0]
-//            response.parser('application/json') { config, resp ->
-//                new JsonSlurper().parse(resp.inputStream)
-//            }
-//            request.headers['PRIVATE-TOKEN'] = 'z7ve3ZFQgCqtvxPktuT9'
-//        }.post {
-//            request.body = [
-//                    'source_branch': 'feature/automated_construction_1.2.2',
-//                    "target_branch": 'master', 'title': 'Auto Create MR'
-//            ]
-//        }
-//
-//        println "Your score for item (${mrResult.id}) was (${mrResult.iid})."
+        def mrResult = HttpBuilder.configure {
+            request.uri = 'http://gitlab.qima-inc.com/api/v4/projects/8173/merge_requests'
+            request.contentType = JSON[0]
+            response.parser('application/json') { config, resp ->
+                new JsonSlurper().parse(resp.inputStream)
+            }
+            request.headers['PRIVATE-TOKEN'] = 'z7ve3ZFQgCqtvxPktuT9'
+        }.post {
+            request.body = [
+                    'source_branch': 'feature/automated_construction_1.2.2',
+                    "target_branch": 'master', 'title': 'Auto Create MR'
+            ]
+        }
+
+        println "Your request id is (${mrResult.id}) & iid is (${mrResult.iid})."
 
         def acceptMr = HttpBuilder.configure {
             request.uri = "http://gitlab.qima-inc.com/api/v4/projects/8173/merge_requests/${mrResult.iid}/merge"
