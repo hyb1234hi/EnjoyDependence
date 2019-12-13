@@ -75,7 +75,7 @@ class AutoGitPlugin implements Plugin<Project> {
                     request.headers['PRIVATE-TOKEN'] = "${autoGitExt.token}"
                     response.success {
                         println("-----------------auto accept mr success----------------")
-                        triggerBuild()
+                        triggerBuild(autoGitExt.version)
                     }
                 }.put()
             }.doLast {
@@ -90,9 +90,9 @@ class AutoGitPlugin implements Plugin<Project> {
         }
     }
 
-    def triggerBuild() {
+    def triggerBuild(String version) {
         try {
-            def p = ['sh', '-c', 'curl -X POST http://172.17.1.50:8080/view/MBD/job/mbd_trigger_build_retail_android_apub/build?token=token_mbd_trigger_build_retail_android_apub'].execute()
+            def p = ['sh', '-c', "curl -X POST --data-urlencode \"version=${version}\" http://172.17.1.50:8080/view/MBD/job/mbd_trigger_build_retail_android_apub/buildWithParameters?token=token_mbd_trigger_build_retail_android_apub"].execute()
             p.waitFor()
         } catch (ignored) {
             println("-----------------trigger build error ----------------")
