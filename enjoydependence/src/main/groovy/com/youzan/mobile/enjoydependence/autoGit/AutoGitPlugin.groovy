@@ -63,6 +63,10 @@ class AutoGitPlugin implements Plugin<Project> {
                 println("-----------------auto accept mr----------------")
             }.doLast {
                 def acceptMr = HttpBuilder.configure {
+                    if (mrResult.iid == null) {
+                        println("-----------------iid is null----------------")
+                        throw new RuntimeException("iid is null")
+                    }
                     request.uri = "http://gitlab.qima-inc.com/api/v4/projects/${autoGitExt.projectId}/merge_requests/${mrResult.iid}/merge"
                     request.contentType = JSON[0]
                     response.parser('application/json') { config, resp ->
@@ -71,6 +75,7 @@ class AutoGitPlugin implements Plugin<Project> {
                     request.headers['PRIVATE-TOKEN'] = "${autoGitExt.token}"
                     response.success {
                         println("-----------------auto accept mr success----------------")
+                        triggerBuild()
                     }
                 }.put()
             }.doLast {
