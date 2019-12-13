@@ -72,6 +72,8 @@ class AutoGitPlugin implements Plugin<Project> {
                 }.put()
             }.doLast {
                 println("-----------------auto accept mr over----------------")
+            }.doLast {
+                println("-----------------auto build start, app version is ${autoGitExt.version}----------------")
             }
         }
     }
