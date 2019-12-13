@@ -3,6 +3,10 @@ apply from: '../dynamic.gradle'
 
 def config = rootProject.ext.android
 
+def getVerName(String versionName) {
+    return versionName
+}
+
 android {
     compileSdkVersion config.compileSdkVersion
     buildToolsVersion config.buildToolsVersion
@@ -39,6 +43,7 @@ autoPublishAll {
 }
 
 autoGit {
+    version = "1.0.2"
     projectId = "8173"
     token = "z7ve3ZFQgCqtvxPktuT9"
     source_branch = "feature/automated_construction_1.2.2"

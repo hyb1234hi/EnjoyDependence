@@ -75,6 +75,10 @@ class AutoGitPlugin implements Plugin<Project> {
             }.doLast {
                 println("-----------------auto build start, app version is ${autoGitExt.version}----------------")
             }
+
+            project.getTasks().create("autoSetVersion", AutoSetVersion.class).doLast {
+                println("-----------------auto setVersion over ----------------")
+            }
         }
     }
 }
