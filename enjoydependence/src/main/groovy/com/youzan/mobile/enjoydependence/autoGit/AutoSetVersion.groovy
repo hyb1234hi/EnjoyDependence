@@ -44,14 +44,14 @@ class AutoSetVersion extends DefaultTask {
             reader.eachLine {
                 if (it.contains("versionName getVerName")) {
                     //获取到版本号那一行
-                    newContent.add("        versionName getVerName(\"${version}\")")
+                    newContent.add("            versionName getVerName(\"${version}\")")
                 } else if (it.contains("versionCode")) {
                     String[] temp = it.split(" ")
                     println(temp.toString())
                     if (temp.size() >= 2) {
                         versionCode = temp[temp.length - 1].toInteger() + 1
                     }
-                    newContent.add("        versionCode ${versionCode}")
+                    newContent.add("            versionCode ${versionCode}")
                 } else if (it.contains("version =")) {
                     newContent.add("    version = \"${version}\"")
                 } else {

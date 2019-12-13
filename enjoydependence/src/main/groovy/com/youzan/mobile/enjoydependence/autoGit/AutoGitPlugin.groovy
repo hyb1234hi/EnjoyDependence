@@ -69,6 +69,9 @@ class AutoGitPlugin implements Plugin<Project> {
                         new JsonSlurper().parse(resp.inputStream)
                     }
                     request.headers['PRIVATE-TOKEN'] = "${autoGitExt.token}"
+                    response.success {
+                        println("-----------------auto accept mr success----------------")
+                    }
                 }.put()
             }.doLast {
                 println("-----------------auto accept mr over----------------")
@@ -79,6 +82,16 @@ class AutoGitPlugin implements Plugin<Project> {
             project.getTasks().create("autoSetVersion", AutoSetVersion.class).doLast {
                 println("-----------------auto setVersion over ----------------")
             }
+        }
+    }
+
+    def triggerBuild() {
+        try {
+            def p = ['sh', '-c', 'curl -X POST http://172.17.1.50:8080/view/MBD/job/mbd_trigger_build_retail_android_apub/build?token=token_mbd_trigger_build_retail_android_apub'].execute()
+            p.waitFor()
+        } catch (ignored) {
+            println("-----------------trigger build error ----------------")
+            return ""
         }
     }
 }
