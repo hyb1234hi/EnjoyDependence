@@ -98,6 +98,8 @@ class AutoGitPlugin implements Plugin<Project> {
             project.getTasks().create("autoSetVersion", AutoSetVersion.class).doLast {
                 println("-----------------auto setVersion over ----------------")
             }
+
+            project.getTasks().create("sendMsg", AutoSendMsg.class)
         }
     }
 
