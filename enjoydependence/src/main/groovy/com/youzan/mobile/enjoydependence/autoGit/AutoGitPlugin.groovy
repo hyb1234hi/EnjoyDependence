@@ -1,6 +1,7 @@
 package com.youzan.mobile.enjoydependence.autoGit
 
 import groovy.json.JsonSlurper
+import groovyx.net.http.FromServer
 import groovyx.net.http.HttpBuilder
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -30,7 +31,6 @@ class AutoGitPlugin implements Plugin<Project> {
         AutoGitExt autoGitExt = project.extensions.create("autoGit", AutoGitExt.class)
 
         project.afterEvaluate {
-            def mrResult
             defSourceBranch = autoGitExt.source_branch
             defTargetBranch = autoGitExt.target_branch
             if (project.hasProperty("source_branch") && project.source_branch != "unspecified") {
@@ -43,7 +43,7 @@ class AutoGitPlugin implements Plugin<Project> {
             project.getTasks().create("autoMr", AutoCreateMrTask.class).doFirst {
                 println("-----------------auto create mr s_branch:${defSourceBranch}; t_branch:${defTargetBranch}----------------")
             }.doLast {
-                mrResult = HttpBuilder.configure {
+                HttpBuilder.configure {
                     request.uri = "http://gitlab.qima-inc.com/api/v4/projects/${autoGitExt.projectId}/merge_requests"
                     request.contentType = JSON[0]
                     response.parser('application/json') { config, resp ->
@@ -57,29 +57,40 @@ class AutoGitPlugin implements Plugin<Project> {
                             'title'        : "${autoGitExt.title}",
                             'description'  : "${autoGitExt.desc}"
                     ]
+
+                    response.success { FromServer fs, Object body ->
+                        if (body != null && body.iid != null) {
+                            println("Your mr request id is (${body.id}) & iid is (${body.iid}).")
+                            println("-----------------auto accept mr----------------")
+                            HttpBuilder.configure {
+                                request.uri = "http://gitlab.qima-inc.com/api/v4/projects/${autoGitExt.projectId}/merge_requests/${body.iid}/merge"
+                                request.contentType = JSON[0]
+                                response.parser('application/json') { config, resp ->
+                                    new JsonSlurper().parse(resp.inputStream)
+                                }
+                                request.headers['PRIVATE-TOKEN'] = "${autoGitExt.token}"
+                            }.put {
+                                response.success {
+                                    println("-----------------auto accept mr success----------------")
+                                    triggerBuild(autoGitExt.version)
+                                    println("-----------------auto accept mr over----------------")
+                                }
+                                response.exception { t ->
+                                    println("-----------------accept mr error: ${t.getMessage()}----------------")
+                                    throw new RuntimeException(t)
+                                }
+                            }
+                        } else {
+                            println("-----------------body is null or iid is null----------------")
+                            throw new RuntimeException("body is null or iid is null")
+                        }
+                    }
+
+                    response.exception { t ->
+                        println("-----------------creat mr error: ${t.getMessage()}----------------")
+                        throw new RuntimeException(t)
+                    }
                 }
-                println "Your request id is (${mrResult.id}) & iid is (${mrResult.iid})."
-            }.doLast {
-                println("-----------------auto accept mr----------------")
-            }.doLast {
-                def acceptMr = HttpBuilder.configure {
-                    if (mrResult.iid == null) {
-                        println("-----------------iid is null----------------")
-                        throw new RuntimeException("iid is null")
-                    }
-                    request.uri = "http://gitlab.qima-inc.com/api/v4/projects/${autoGitExt.projectId}/merge_requests/${mrResult.iid}/merge"
-                    request.contentType = JSON[0]
-                    response.parser('application/json') { config, resp ->
-                        new JsonSlurper().parse(resp.inputStream)
-                    }
-                    request.headers['PRIVATE-TOKEN'] = "${autoGitExt.token}"
-                    response.success {
-                        println("-----------------auto accept mr success----------------")
-                        triggerBuild(autoGitExt.version)
-                    }
-                }.put()
-            }.doLast {
-                println("-----------------auto accept mr over----------------")
             }.doLast {
                 println("-----------------auto build start, app version is ${autoGitExt.version}----------------")
             }
