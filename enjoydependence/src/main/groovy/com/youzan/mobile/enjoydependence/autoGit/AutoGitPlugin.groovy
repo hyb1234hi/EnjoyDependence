@@ -119,6 +119,7 @@ class AutoGitPlugin implements Plugin<Project> {
             }
 
             project.getTasks().create("sendMsg", AutoSendMsg.class)
+            project.getTasks().create("autoMerge", AutoMerge.class)
         }
     }
 
