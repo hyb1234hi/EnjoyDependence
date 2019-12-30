@@ -65,53 +65,64 @@ class AutoMerge extends DefaultTask {
                     println("-----------------create mr failure----------------")
                     return
                 }
-                switch (body.merge_status) {
-                    case "unchecked":
-                        //如果返回此状态，说明非法merge request，需要将该mr 删除
-                        println("Your mr request is unchecked, should delete")
-                        HttpBuilder.configure {
-                            request.uri = "http://gitlab.qima-inc.com/api/v4/projects/${autoGitExt.projectId}/merge_requests/${body.iid}"
-                            request.contentType = JSON[0]
-                            response.parser('application/json') { config, resp ->
-                                new JsonSlurper().parse(resp.inputStream)
+
+                println("Your mr request id is (${body.id}) & iid is (${body.iid}).")
+
+                HttpBuilder.configure {
+                    request.uri = "http://gitlab.qima-inc.com/api/v4/projects/${autoGitExt.projectId}/merge_requests/${body.iid}/changes"
+                    request.contentType = JSON[0]
+                    response.parser('application/json') { config, resp ->
+                        new JsonSlurper().parse(resp.inputStream)
+                    }
+                    request.headers['PRIVATE-TOKEN'] = "${autoGitExt.token}"
+                }.get {
+                    response.success { FromServer fs1, Object changesInfo ->
+                        if (changesInfo.changes.size <= 0) {
+                            //无更改，则不需要accept 删掉 mr即可
+                            println("-----------------Your mr request changes is null, should delete----------------")
+                            HttpBuilder.configure {
+                                request.uri = "http://gitlab.qima-inc.com/api/v4/projects/${autoGitExt.projectId}/merge_requests/${body.iid}"
+                                request.contentType = JSON[0]
+                                response.parser('application/json') { config, resp ->
+                                    new JsonSlurper().parse(resp.inputStream)
+                                }
+                                request.headers['PRIVATE-TOKEN'] = "${autoGitExt.token}"
+                            }.put {
+                                request.body = [
+                                        'state_event': "close"
+                                ]
+                                response.success {
+                                    println("-----------------delete mr success----------------")
+                                }
+                                response.exception { t ->
+                                    println("-----------------delete mr failure----------------")
+                                    println(t.getMessage())
+                                }
                             }
-                            request.headers['PRIVATE-TOKEN'] = "${autoGitExt.token}"
-                        }.put {
-                            request.body = [
-                                    'state_event': "close"
-                            ]
-                            response.success {
-                                println("-----------------delete mr success----------------")
-                            }
-                            response.exception { t ->
-                                println("-----------------delete mr failure----------------")
-                                println(t.getMessage())
+                        } else {
+                            println("-----------------auto accept mr----------------")
+                            HttpBuilder.configure {
+                                request.uri = "http://gitlab.qima-inc.com/api/v4/projects/${autoGitExt.projectId}/merge_requests/${body.iid}/merge"
+                                request.contentType = JSON[0]
+                                response.parser('application/json') { config, resp ->
+                                    new JsonSlurper().parse(resp.inputStream)
+                                }
+                                request.headers['PRIVATE-TOKEN'] = "${autoGitExt.token}"
+                            }.put {
+                                response.success {
+                                    println("-----------------auto accept mr success----------------")
+                                }
+                                response.exception { t ->
+                                    println("-----------------accept mr error: ${t.getMessage()}----------------")
+                                    throw new RuntimeException(t)
+                                }
                             }
                         }
-                        break
-                    case "can_be_merged":
-                        println("Your mr request id is (${body.id}) & iid is (${body.iid}).")
-                        println("-----------------auto accept mr----------------")
-                        HttpBuilder.configure {
-                            request.uri = "http://gitlab.qima-inc.com/api/v4/projects/${autoGitExt.projectId}/merge_requests/${body.iid}/merge"
-                            request.contentType = JSON[0]
-                            response.parser('application/json') { config, resp ->
-                                new JsonSlurper().parse(resp.inputStream)
-                            }
-                            request.headers['PRIVATE-TOKEN'] = "${autoGitExt.token}"
-                        }.put {
-                            response.success {
-                                println("-----------------auto accept mr success----------------")
-                            }
-                            response.exception { t ->
-                                println("-----------------accept mr error: ${t.getMessage()}----------------")
-                                throw new RuntimeException(t)
-                            }
-                        }
-                        break
-                    default:
-                        throw new RuntimeException("${body.merge_status}")
-                        break
+
+                    }
+                    response.exception { t ->
+                        throw new RuntimeException(t)
+                    }
                 }
             }
         }
