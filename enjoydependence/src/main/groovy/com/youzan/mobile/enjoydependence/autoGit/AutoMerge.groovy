@@ -1,5 +1,6 @@
 package com.youzan.mobile.enjoydependence.autoGit
 
+import com.youzan.mobile.enjoydependence.autoGit.util.AutoGitUtils
 import groovy.json.JsonSlurper
 import groovyx.net.http.FromServer
 import groovyx.net.http.HttpBuilder
@@ -44,7 +45,7 @@ class AutoMerge extends DefaultTask {
         }
         AutoGitExt autoGitExt = project.extensions.findByType(AutoGitExt.class)
 
-        println(println("-----------------auto create mr s_branch:${source_branch}; t_branch:${target_branch}----------------"))
+        println("-----------------auto create mr s_branch:${source_branch}; t_branch:${target_branch}----------------")
         HttpBuilder.configure {
             request.uri = "http://gitlab.qima-inc.com/api/v4/projects/${autoGitExt.projectId}/merge_requests"
             request.contentType = JSON[0]
@@ -114,18 +115,23 @@ class AutoMerge extends DefaultTask {
                                 }
                                 response.exception { t ->
                                     println("-----------------accept mr error: ${t.getMessage()}----------------")
+                                    sendFailureMessage("${userEmail}", "Accept MR Failure", "merge request合并失败", "${body.web_url}")
                                     throw new RuntimeException(t)
                                 }
                             }
                         }
 
                     }
-                    response.exception { t ->
+                    response.failure { t ->
+                        sendFailureMessage("${userEmail}", "Create MR Failure", "自动创建merge request失败", "${projectUrl}")
                         throw new RuntimeException(t)
                     }
                 }
             }
         }
+    }
 
+    def sendFailureMessage(String userEmail, String title, String desc, String url) {
+        AutoGitUtils.sendMessage("${userEmail}", "{\"status\":\"failure\",\"title\":\"${title}\",\"desc\":\"${desc}\",\"url\":\"${url}\"}")
     }
 }
