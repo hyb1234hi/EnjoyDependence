@@ -15,8 +15,8 @@ import static groovyx.net.http.ContentTypes.JSON
  */
 class AutoMerge extends DefaultTask {
 
-    def source_branch = "release/latest"
-    def target_branch = "dev"
+    def source_branch = ""
+    def target_branch = ""
     def userEmail = ""
 
     //零售git工程
@@ -34,6 +34,10 @@ class AutoMerge extends DefaultTask {
 
     @TaskAction
     void autoMerge() {
+        AutoGitExt autoGitExt = project.extensions.findByType(AutoGitExt.class)
+        source_branch = autoGitExt.source_branch
+        target_branch = autoGitExt.target_branch
+        userEmail = autoGitExt.userEmail
         if (project.hasProperty("source_branch") && project.source_branch != "unspecified") {
             source_branch = project.source_branch
         }
@@ -43,7 +47,6 @@ class AutoMerge extends DefaultTask {
         if (project.hasProperty("userEmail") && project.userEmail != "unspecified") {
             userEmail = project.userEmail
         }
-        AutoGitExt autoGitExt = project.extensions.findByType(AutoGitExt.class)
 
         println("-----------------auto create mr s_branch:${source_branch}; t_branch:${target_branch}----------------")
         HttpBuilder.configure {
@@ -64,7 +67,7 @@ class AutoMerge extends DefaultTask {
             response.success { FromServer fs, Object body ->
                 if (body == null || body.iid == null) {
                     println("-----------------create mr failure----------------")
-                    return
+                    throw new RuntimeException("create mr failure")
                 }
 
                 println("Your mr request id is (${body.id}) & iid is (${body.iid}).")
@@ -122,11 +125,18 @@ class AutoMerge extends DefaultTask {
                         }
 
                     }
-                    response.failure { t ->
-                        sendFailureMessage("${userEmail}", "Create MR Failure", "自动创建merge request失败", "${projectUrl}")
-                        throw new RuntimeException(t)
+
+                    response.failure {
+                        println("-----------------get mr changes info error----------------")
+                        sendFailureMessage("${userEmail}", "获取MR changes info Failure", "获取changes info 失败", "${projectUrl}")
                     }
                 }
+            }
+
+            response.failure {
+                println("-----------------Create MR Failure----------------")
+                sendFailureMessage("${userEmail}", "Create MR Failure", "自动创建merge request失败", "${projectUrl}")
+                throw new RuntimeException("Create Mr Failure")
             }
         }
     }

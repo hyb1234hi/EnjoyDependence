@@ -13,9 +13,10 @@ import static groovyx.net.http.ContentTypes.JSON
 /**
  * 自动merge并且触发零售APP&零售HD构建
  */
-class AutoMergeAndTriggerBuild extends DefaultTask {
-    def source_branch = "release/latest"
-    def target_branch = "dev"
+class AutoMergeAndTriggerMBDBuild extends DefaultTask {
+
+    def source_branch = ""
+    def target_branch = ""
     def userEmail = ""
 
     //零售git工程
@@ -37,6 +38,10 @@ class AutoMergeAndTriggerBuild extends DefaultTask {
 
     @TaskAction
     void autoMergeAndTriggerBuild() {
+        AutoGitExt autoGitExt = project.extensions.findByType(AutoGitExt.class)
+        source_branch = autoGitExt.source_branch
+        target_branch = autoGitExt.target_branch
+        userEmail = autoGitExt.userEmail
         if (project.hasProperty("source_branch") && project.source_branch != "unspecified") {
             source_branch = project.source_branch
         }
@@ -46,7 +51,6 @@ class AutoMergeAndTriggerBuild extends DefaultTask {
         if (project.hasProperty("userEmail") && project.userEmail != "unspecified") {
             userEmail = project.userEmail
         }
-        AutoGitExt autoGitExt = project.extensions.findByType(AutoGitExt.class)
 
         println("-----------------auto create mr s_branch:${source_branch}; t_branch:${target_branch}----------------")
         HttpBuilder.configure {
