@@ -1,10 +1,9 @@
-package com.youzan.mobile.enjoydependence.autoGit
+package com.youzan.mobile.enjoydependence.autoGit.task
 
+import com.youzan.mobile.enjoydependence.autoGit.model.AutoMessage
 import groovy.json.JsonSlurper
-import jdk.nashorn.internal.parser.JSONParser
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
-import groovyx.net.http.OkHttpBuilder
 import groovyx.net.http.*
 import static groovyx.net.http.MultipartContent.multipart
 

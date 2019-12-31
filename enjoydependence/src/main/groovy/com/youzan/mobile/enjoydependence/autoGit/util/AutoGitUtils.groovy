@@ -1,6 +1,6 @@
 package com.youzan.mobile.enjoydependence.autoGit.util
 
-import com.youzan.mobile.enjoydependence.autoGit.AutoMessage
+import com.youzan.mobile.enjoydependence.autoGit.model.AutoMessage
 import groovy.json.JsonSlurper
 import groovyx.net.http.FromServer
 import groovyx.net.http.OkHttpBuilder

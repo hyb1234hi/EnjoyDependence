@@ -1,19 +1,20 @@
-package com.youzan.mobile.enjoydependence.autoGit
+package com.youzan.mobile.enjoydependence.autoGit.task
 
+import com.youzan.mobile.enjoydependence.autoGit.model.AutoGitExt
 import com.youzan.mobile.enjoydependence.autoGit.util.AutoGitUtils
 import groovy.json.JsonSlurper
 import groovyx.net.http.FromServer
 import groovyx.net.http.HttpBuilder
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
-import org.gradle.internal.impldep.aQute.bnd.build.Run
 
 import static groovyx.net.http.ContentTypes.JSON
 
 /**
- * 自动merge并且触发零售APP&零售HD构建
+ * 自动merge
+ * 可以自定义source_branch/target_branch
  */
-class AutoMergeAndTriggerMBDBuild extends DefaultTask {
+class AutoMerge extends DefaultTask {
 
     def source_branch = ""
     def target_branch = ""
@@ -21,10 +22,6 @@ class AutoMergeAndTriggerMBDBuild extends DefaultTask {
 
     //零售git工程
     def projectUrl = "http://gitlab.qima-inc.com/normandy-android/NewRetail/merge_requests"
-    //零售HD MBD构建任务
-    def newRetailHDMBDUrl = "https://mbd.qima-inc.com/#/integration/3901"
-    //零售 MBD构建任务
-    def newRetailMBDUrl = "https://mbd.qima-inc.com/#/integration/3900"
 
     @Override
     String getGroup() {
@@ -33,11 +30,11 @@ class AutoMergeAndTriggerMBDBuild extends DefaultTask {
 
     @Override
     String getDescription() {
-        return "auto create a merge request、 accept request & auto trigger retail mbd build"
+        return "auto create a merge request & accept request"
     }
 
     @TaskAction
-    void autoMergeAndTriggerBuild() {
+    void autoMerge() {
         AutoGitExt autoGitExt = project.extensions.findByType(AutoGitExt.class)
         source_branch = autoGitExt.source_branch
         target_branch = autoGitExt.target_branch
@@ -119,9 +116,6 @@ class AutoMergeAndTriggerMBDBuild extends DefaultTask {
                             }.put {
                                 response.success {
                                     println("-----------------auto accept mr success----------------")
-                                    triggerBuild(autoGitExt.version)
-                                    sendSuccessMessage("${userEmail}", "恭喜你，第一阶段成功完成，即将开始第二阶段", "成功触发构建提测包，请继续跟进", "${newRetailHDMBDUrl}")
-                                    println("-----------------auto build start, app version is ${autoGitExt.version}----------------")
                                 }
                                 response.exception { t ->
                                     println("-----------------accept mr error: ${t.getMessage()}----------------")
@@ -148,21 +142,7 @@ class AutoMergeAndTriggerMBDBuild extends DefaultTask {
         }
     }
 
-    def sendSuccessMessage(String userEmail, String title, String desc, String url) {
-        AutoGitUtils.sendMessage("${userEmail}", "{\"status\":\"success\",\"title\":\"${title}\",\"desc\":\"${desc}\",\"url\":\"${url}\"}")
-    }
-
     def sendFailureMessage(String userEmail, String title, String desc, String url) {
         AutoGitUtils.sendMessage("${userEmail}", "{\"status\":\"failure\",\"title\":\"${title}\",\"desc\":\"${desc}\",\"url\":\"${url}\"}")
-    }
-
-    def triggerBuild(String version) {
-        try {
-            def p = ['sh', '-c', "curl -X POST --data-urlencode \"version=${version}\" http://172.17.1.50:8080/view/MBD/job/mbd_trigger_build_retail_android_apub/buildWithParameters?token=token_mbd_trigger_build_retail_android_apub"].execute()
-            p.waitFor()
-        } catch (ignored) {
-            println("-----------------trigger build error ----------------")
-            throw new RuntimeException("trigger build error")
-        }
     }
 }

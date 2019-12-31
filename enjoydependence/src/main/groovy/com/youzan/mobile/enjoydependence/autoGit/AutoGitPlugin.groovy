@@ -1,5 +1,10 @@
 package com.youzan.mobile.enjoydependence.autoGit
 
+import com.youzan.mobile.enjoydependence.autoGit.model.AutoGitExt
+import com.youzan.mobile.enjoydependence.autoGit.task.AutoMerge
+import com.youzan.mobile.enjoydependence.autoGit.task.AutoMergeAndTriggerMBDBuild
+import com.youzan.mobile.enjoydependence.autoGit.task.AutoSendMsg
+import com.youzan.mobile.enjoydependence.autoGit.task.AutoSetVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
