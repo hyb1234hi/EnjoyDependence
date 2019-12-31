@@ -48,5 +48,6 @@ autoGit {
     token = "z7ve3ZFQgCqtvxPktuT9"
     source_branch = "feature/automated_construction_1.2.2"
     target_branch = "master"
+    userEmail = "liuyang_ly@youzan.com"
 }
 
