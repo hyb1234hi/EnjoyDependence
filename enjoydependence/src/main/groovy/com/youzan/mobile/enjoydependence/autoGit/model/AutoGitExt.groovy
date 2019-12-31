@@ -1,4 +1,4 @@
-package com.youzan.mobile.enjoydependence.autoGit
+package com.youzan.mobile.enjoydependence.autoGit.model
 
 /**
  * git 自动化所需参数
