@@ -1,48 +1,21 @@
-package com.youzan.mobile.enjoydependence.autoGit
+package com.youzan.mobile.enjoydependence.autoGit.util
 
+import com.youzan.mobile.enjoydependence.autoGit.model.AutoMessage
 import groovy.json.JsonSlurper
-import jdk.nashorn.internal.parser.JSONParser
-import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.TaskAction
+import groovyx.net.http.FromServer
 import groovyx.net.http.OkHttpBuilder
-import groovyx.net.http.*
+import groovyx.net.http.OkHttpEncoders
+
 import static groovyx.net.http.MultipartContent.multipart
 
-/**
- * 在企业微信中, 发送message给对应的同事
- */
-class AutoSendMsg extends DefaultTask {
-
-    @Override
-    String getGroup() {
-        return "autoGit"
-    }
-
-    @Override
-    String getDescription() {
-        return "auto send a message to "
-    }
-
-    @TaskAction
-    void sendMsg() {
-        def userEmail = null
-        def message = null
-        if (project.hasProperty("userEmail") && project.userEmail != "unspecified") {
-            userEmail = project.userEmail
-        }
-        if (project.hasProperty("message") && project.message != "unspecified") {
-            message = project.message
-        }
-//        sendMessage("liuyang_ly@youzan.com", "{\"status\":\"success\",\"title\":\"构造进行中\",\"desc\":\"具体请查看MBD\",\"url\":\"www.baidu.com\"}")
-        sendMessage(userEmail, message)
-    }
+class AutoGitUtils {
 
     /**
      * 发送消息
      * @param title 标题
      * @param desc 描述
      */
-    private void sendMessage(String userEmail, String desc) {
+    public static void sendMessage(String userEmail, String desc) {
         if (userEmail == null || userEmail.isEmpty()) {
             return
         }
@@ -75,5 +48,4 @@ class AutoSendMsg extends DefaultTask {
             }
         }
     }
-
 }

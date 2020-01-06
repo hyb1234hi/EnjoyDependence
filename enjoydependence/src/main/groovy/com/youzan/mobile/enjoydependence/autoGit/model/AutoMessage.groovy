@@ -1,4 +1,4 @@
-package com.youzan.mobile.enjoydependence.autoGit
+package com.youzan.mobile.enjoydependence.autoGit.model
 
 /**
  * 自动化构建中的信息model

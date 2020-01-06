@@ -1,4 +1,4 @@
-package com.youzan.mobile.enjoydependence.autoGit
+package com.youzan.mobile.enjoydependence.autoGit.model
 
 /**
  * git 自动化所需参数
@@ -12,4 +12,5 @@ class AutoGitExt {
     String title = "Auto Create MR" //mr title
     String assignee_id //指定提醒人士
     String desc //mr描述
+    String userEmail = ""//值班人邮箱
 }

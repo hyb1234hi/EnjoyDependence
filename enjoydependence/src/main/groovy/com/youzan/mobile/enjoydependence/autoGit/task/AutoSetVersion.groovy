@@ -1,4 +1,4 @@
-package com.youzan.mobile.enjoydependence.autoGit
+package com.youzan.mobile.enjoydependence.autoGit.task
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
