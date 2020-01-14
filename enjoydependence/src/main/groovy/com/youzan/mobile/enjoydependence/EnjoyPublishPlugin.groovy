@@ -53,7 +53,7 @@ class EnjoyPublishPlugin implements Plugin<Project> {
         }
         MavenPublishExt publishExt = project.extensions.create("mavenPublish", MavenPublishExt)
         project.afterEvaluate {
-            def androidTemp =  project.extensions.findByType(LibraryExtension)
+            def androidTemp = project.extensions.findByType(LibraryExtension)
             if (androidTemp == null) {
                 return
             }
@@ -63,6 +63,9 @@ class EnjoyPublishPlugin implements Plugin<Project> {
             }
             if (publishExt.artifactId == null || publishExt.artifactId == "") {
                 return
+            }
+            if (project.hasProperty("localPublish") && project.localPublish != "unspecified") {
+                publishExt.localPublish = project.localPublish
             }
             if (publishExt.localPublish) {
                 project.publishing {
