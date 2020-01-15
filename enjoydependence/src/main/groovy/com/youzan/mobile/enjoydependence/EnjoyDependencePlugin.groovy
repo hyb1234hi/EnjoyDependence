@@ -1,6 +1,6 @@
 package com.youzan.mobile.enjoydependence
 
-import com.youzan.mobile.enjoydependence.aapt.AaptPublicPlugin
+import com.youzan.mobile.enjoydependence.aapt.FixResIdPlugin
 import com.youzan.mobile.enjoydependence.auto.all.AutoPublishAllPlugin
 import com.youzan.mobile.enjoydependence.auto.AutoPublishPlugin
 import com.youzan.mobile.enjoydependence.autoGit.AutoGitPlugin
@@ -23,7 +23,7 @@ class EnjoyDependencePlugin implements Plugin<Project> {
             it.plugins.apply(AutoPublishPlugin)
             it.plugins.apply(AutoPublishAllPlugin)
             it.plugins.apply(AutoGitPlugin)
-            it.plugins.apply(AaptPublicPlugin)
+            it.plugins.apply(FixResIdPlugin)
         }
     }
 }
