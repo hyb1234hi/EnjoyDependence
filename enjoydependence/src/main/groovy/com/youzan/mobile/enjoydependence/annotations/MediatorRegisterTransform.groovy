@@ -147,10 +147,6 @@ class MediatorRegisterTransform extends Transform {
             def attribute = tempCls.classFile.getAttributes()
             mProject.logger.error(attribute.toString())
             Annotation mediatorRegister = null
-//            AnnotationsAttribute abb = attribute.get(1)
-//            mediatorRegister = abb.getAnnotations()[0]
-//            mProject.logger.error(((StringMemberValue)mediatorRegister.getMemberValue("pluginName")).getValue())
-//            AnnotationsAttribute.getAnnotations()
             for (AttributeInfo att : attribute) {
                 if (att instanceof AnnotationsAttribute) {
                     AnnotationsAttribute aatt = att as AnnotationsAttribute
