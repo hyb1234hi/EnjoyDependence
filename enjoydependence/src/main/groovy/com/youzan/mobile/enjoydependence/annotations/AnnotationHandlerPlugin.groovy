@@ -1,8 +1,7 @@
 package com.youzan.mobile.enjoydependence.annotations
 
-import com.android.build.gradle.AppExtension
+
 import com.android.build.gradle.LibraryExtension
-import com.android.build.gradle.AppPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -19,7 +18,7 @@ class AnnotationHandlerPlugin implements Plugin<Project> {
                 return
             }
 
-            libExtension.registerTransform(new AnnotationTransform(project))
+            libExtension.registerTransform(new MediatorRegisterTransform(project))
         }
     }
 }

@@ -14,22 +14,28 @@ import com.google.common.collect.ImmutableSet
 import javassist.ClassPool
 import javassist.CtClass
 import javassist.CtMethod
+import javassist.bytecode.AnnotationsAttribute
+import javassist.bytecode.AttributeInfo
+import javassist.bytecode.SourceFileAttribute
+import javassist.bytecode.annotation.Annotation
+import javassist.bytecode.annotation.StringMemberValue
 import jdk.internal.org.objectweb.asm.ClassReader
 import org.gradle.api.Project
 
-class AnnotationTransform extends Transform {
+
+class MediatorRegisterTransform extends Transform {
 
     private Project mProject
     private ClassPool mClassPool = ClassPool.getDefault()
     private List<String> mTargetCtClasses = new ArrayList<>()
 
-    AnnotationTransform(Project project) {
+    MediatorRegisterTransform(Project project) {
         this.mProject = project
     }
 
     @Override
     String getName() {
-        return "annotationTransform"
+        return "mediatorRegisterTransform"
     }
 
     @Override
@@ -130,7 +136,7 @@ class AnnotationTransform extends Transform {
         }
 
         def hasModified = false
-        def annotation = tempCls.hasAnnotation("com.youzan.mobile.lib_common.annotation.Export")
+        def annotation = tempCls.hasAnnotation("com.youzan.mobile.lib_common.annotation.MediatorRegister")
         if (annotation) {
             mProject.logger.error("annotation class is : ${file.absolutePath}")
             def targetCtclass = mClassPool.get(mTargetCtClasses.get(0))
@@ -138,13 +144,35 @@ class AnnotationTransform extends Transform {
                 targetCtclass.defrost()
             }
 
-            CtMethod ctMethod = targetCtclass.getDeclaredMethod("onCreat")
-            String register = "{com.youzan.mobile.lib_common.Register register = com.youzan.mobile.lib_common.Register.register;" +
-                    "register.regis(\"aPlugin\", new $tempCls.name());}"
+            def attribute = tempCls.classFile.getAttributes()
+            mProject.logger.error(attribute.toString())
+            Annotation mediatorRegister = null
+//            AnnotationsAttribute abb = attribute.get(1)
+//            mediatorRegister = abb.getAnnotations()[0]
+//            mProject.logger.error(((StringMemberValue)mediatorRegister.getMemberValue("pluginName")).getValue())
+//            AnnotationsAttribute.getAnnotations()
+            for (AttributeInfo att : attribute) {
+                if (att instanceof AnnotationsAttribute) {
+                    AnnotationsAttribute aatt = att as AnnotationsAttribute
+                    for (Annotation ann : aatt.getAnnotations()) {
+                        if (ann.typeName.contains("MediatorRegister")) {
+                            mediatorRegister = ann
+                            break
+                        }
+                    }
+                }
+            }
 
-            ctMethod.insertAfter(register)
-            targetCtclass.writeFile(directory.absolutePath)
-            targetCtclass.detach()
+            if (mediatorRegister != null) {
+                def pluginName = ((StringMemberValue) mediatorRegister.getMemberValue("pluginName")).getValue()
+                CtMethod ctMethod = targetCtclass.getDeclaredMethod("onCreate")
+                String register = "{com.youzan.mobile.lib_common.Register register = com.youzan.mobile.lib_common.Register.register;" +
+                        "register.regis(\"${pluginName}\", new $tempCls.name());}"
+
+                ctMethod.insertAfter(register)
+                targetCtclass.writeFile(directory.absolutePath)
+                targetCtclass.detach()
+            }
         }
     }
 }

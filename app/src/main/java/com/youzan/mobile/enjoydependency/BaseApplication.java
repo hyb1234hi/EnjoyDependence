@@ -12,8 +12,8 @@ public class BaseApplication extends Application {
         super.onCreate();
 
         AApplication a = new AApplication();
-        a.onCreat();
+        a.onCreate();
         BApplication b = new BApplication();
-        b.onCreat();
+        b.onCreate();
     }
 }
