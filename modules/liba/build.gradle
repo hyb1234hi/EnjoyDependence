@@ -1,3 +1,5 @@
+import proguard.ProGuard
+
 apply plugin: 'com.android.library'
 //apply from: '../../dynamic.gradle'
 
@@ -22,6 +24,24 @@ if (project.tasks['sourcesJar']) {
     artifacts {
         archives sourcesJar
     }
+}
+
+task makeJar(type: Jar) {
+//    appendix = "demo"
+//    baseName = "androidJar"
+    version = "1.0.0"
+//    classifier = "release"
+    //后缀名
+    extension = "jar"
+    //最终的 Jar 包名，如果没设置，默认为 [baseName]-[appendix]-[version]-[classifier].[extension]
+    archiveName = "moduleAApi.jar"
+    //需打包的资源所在的路径集
+    def srcClassDir = [project.buildDir.absolutePath + "/moduleApiExport"]
+    //初始化资源路径集
+    from srcClassDir
+    //去除路径集下部分的资源
+    //    exclude "okhttphelper/clz/com/okhttphelper/BuildConfig.class"
+//    include "ExportAPlugin.class"
 }
 
 android {
@@ -70,9 +90,9 @@ mavenPublish {
     version = versionP.getProperty("versionName") // 如果不包含SNAPSHOT，则发布到release的仓库
     groupId = properties.getProperty("sdk_groupId")
     artifactId = properties.getProperty("sdk_artifactId")
-    userName="mobile"
-    password="BlRlkE9W"
-    snapshotRepo="http://maven.qima-inc.com/content/repositories/snapshots/"
+    userName = "mobile"
+    password = "BlRlkE9W"
+    snapshotRepo = "http://maven.qima-inc.com/content/repositories/snapshots/"
 }
 
 autoPublish {

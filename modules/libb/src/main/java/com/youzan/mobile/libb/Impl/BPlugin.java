@@ -7,6 +7,6 @@ import com.youzan.mobile.lib_common.annotation.MediatorRegister;
 public class BPlugin extends LibBPlugin {
     @Override
     public void say() {
-        System.out.println("我是libB");
+        System.out.println("hello : 我是libB");
     }
 }

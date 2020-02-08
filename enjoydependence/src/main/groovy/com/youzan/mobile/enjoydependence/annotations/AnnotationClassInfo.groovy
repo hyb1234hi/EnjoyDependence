@@ -4,7 +4,7 @@ class AnnotationClassInfo {
 
     public String pluginName
     public String className
-    public String hasRegister
+    public boolean hasRegister
 
     AnnotationClassInfo(String pluginName, String className, boolean hasRegister) {
         this.pluginName = pluginName

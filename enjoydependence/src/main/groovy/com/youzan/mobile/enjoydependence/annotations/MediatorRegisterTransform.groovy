@@ -65,7 +65,7 @@ class MediatorRegisterTransform extends Transform {
 
     @Override
     boolean isIncremental() {
-        return false
+        return true
     }
 
     @Override
@@ -144,7 +144,7 @@ class MediatorRegisterTransform extends Transform {
                 }
                 CtMethod ctMethod = tempCls.getDeclaredMethod("onCreate")
                 String register = "{com.youzan.mobile.lib_common.Register register = com.youzan.mobile.lib_common.Register.register;" +
-                        "register.regis(\"${pluginName}\", new ${mAnnotationCtClasses.get(pluginName)}());}"
+                        "register.regis(\"${pluginName}\", new ${mAnnotationCtClasses.get(pluginName).className}());}"
 
                 ctMethod.insertAfter(register)
                 tempCls.writeFile(directory.absolutePath)
@@ -195,6 +195,7 @@ class MediatorRegisterTransform extends Transform {
                         ctMethod.insertAfter(register)
                         targetCtclass.writeFile(directory.absolutePath)
                         targetCtclass.detach()
+                        mAnnotationCtClasses.get(pluginName).hasRegister = true
                     }
                 }
             }
