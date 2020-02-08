@@ -22,12 +22,13 @@ import javassist.bytecode.annotation.StringMemberValue
 import jdk.internal.org.objectweb.asm.ClassReader
 import org.gradle.api.Project
 
-
 class MediatorRegisterTransform extends Transform {
 
     private Project mProject
     private ClassPool mClassPool = ClassPool.getDefault()
-    private List<String> mTargetCtClasses = new ArrayList<>()
+    private List<String> mTargetCtClasses = new ArrayList<>()//注册类
+    private Map<String, AnnotationClassInfo> mAnnotationCtClasses = new HashMap<>()
+//携带MediatorRegister注解的类
 
     MediatorRegisterTransform(Project project) {
         this.mProject = project
@@ -133,16 +134,29 @@ class MediatorRegisterTransform extends Transform {
         if (isTarget) {
             mProject.logger.error("target class is : $tempCls.name")
             mTargetCtClasses.add(tempCls.name)
+
+            for (String pluginName : mAnnotationCtClasses.keySet()) {
+                if (mAnnotationCtClasses.get(pluginName).hasRegister) {
+                    continue
+                }
+                if (tempCls.isFrozen()) {
+                    tempCls.defrost()
+                }
+                CtMethod ctMethod = tempCls.getDeclaredMethod("onCreate")
+                String register = "{com.youzan.mobile.lib_common.Register register = com.youzan.mobile.lib_common.Register.register;" +
+                        "register.regis(\"${pluginName}\", new ${mAnnotationCtClasses.get(pluginName)}());}"
+
+                ctMethod.insertAfter(register)
+                tempCls.writeFile(directory.absolutePath)
+                tempCls.detach()
+                mAnnotationCtClasses.get(pluginName).hasRegister = true
+            }
         }
 
         def hasModified = false
         def annotation = tempCls.hasAnnotation("com.youzan.mobile.lib_common.annotation.MediatorRegister")
         if (annotation) {
             mProject.logger.error("annotation class is : ${file.absolutePath}")
-            def targetCtclass = mClassPool.get(mTargetCtClasses.get(0))
-            if (targetCtclass.isFrozen()) {
-                targetCtclass.defrost()
-            }
 
             def attribute = tempCls.classFile.getAttributes()
             mProject.logger.error(attribute.toString())
@@ -159,15 +173,30 @@ class MediatorRegisterTransform extends Transform {
                 }
             }
 
+            def pluginName = null
             if (mediatorRegister != null) {
-                def pluginName = ((StringMemberValue) mediatorRegister.getMemberValue("pluginName")).getValue()
-                CtMethod ctMethod = targetCtclass.getDeclaredMethod("onCreate")
-                String register = "{com.youzan.mobile.lib_common.Register register = com.youzan.mobile.lib_common.Register.register;" +
-                        "register.regis(\"${pluginName}\", new $tempCls.name());}"
+                pluginName = ((StringMemberValue) mediatorRegister.getMemberValue("pluginName")).getValue()
+            }
 
-                ctMethod.insertAfter(register)
-                targetCtclass.writeFile(directory.absolutePath)
-                targetCtclass.detach()
+            if (pluginName != null) {
+                //注解类存储
+                mAnnotationCtClasses.put(pluginName, new AnnotationClassInfo(pluginName, tempCls.name, false))
+                //动态注册
+                for (String targetClassName : mTargetCtClasses) {
+                    def targetCtclass = mClassPool.get(targetClassName)
+                    if (targetCtclass.isFrozen()) {
+                        targetCtclass.defrost()
+                    }
+                    if (mediatorRegister != null) {
+                        CtMethod ctMethod = targetCtclass.getDeclaredMethod("onCreate")
+                        String register = "{com.youzan.mobile.lib_common.Register register = com.youzan.mobile.lib_common.Register.register;" +
+                                "register.regis(\"${pluginName}\", new $tempCls.name());}"
+
+                        ctMethod.insertAfter(register)
+                        targetCtclass.writeFile(directory.absolutePath)
+                        targetCtclass.detach()
+                    }
+                }
             }
         }
     }
