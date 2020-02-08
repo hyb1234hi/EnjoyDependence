@@ -10,5 +10,5 @@ import com.youzan.mobile.lib_common.annotation.Export;
 public abstract class ExportAPlugin implements IPlugin {
     public abstract void saySomething();
 
-    public abstract void doSomething();
+    public abstract AModel doSomething();
 }

@@ -13,5 +13,6 @@ public class BRouter {
         aPlugin.say();
         ExportAPlugin aExxportPlugin = (ExportAPlugin) Register.register.getPlugin("implAPlugin");
         aExxportPlugin.saySomething();
+        System.out.println("hello:" + aExxportPlugin.doSomething().name);
     }
 }

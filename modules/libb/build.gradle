@@ -23,11 +23,11 @@ android {
 }
 
 dependencies {
-//    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
     compileOnly project(path: ':modules:lib_common')
-    compileOnly files("libs/moduleAApi.jar")
+    compileOnly 'com.youzan.mobile:liba-module-api:1.0.1-SNAPSHOT'
 }
 
 def localPublishSwitch = true

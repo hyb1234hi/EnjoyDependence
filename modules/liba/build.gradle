@@ -1,5 +1,3 @@
-import proguard.ProGuard
-
 apply plugin: 'com.android.library'
 //apply from: '../../dynamic.gradle'
 
@@ -26,22 +24,29 @@ if (project.tasks['sourcesJar']) {
     }
 }
 
+//用于发布export包
+//publishing {
+//    repositories {
+//        mavenLocal()
+//    }
+//
+//    publications {
+//        maven(MavenPublication) {
+//            artifact "${project.buildDir}/libs/liba-export-api.jar"
+//            groupId "com.youzan.mobile"
+//            artifactId "liba-module-api"
+//            version "1.0.1-SNAPSHOT"
+//        }
+//    }
+//}
+
 task makeJar(type: Jar) {
-//    appendix = "demo"
-//    baseName = "androidJar"
-    version = "1.0.0"
-//    classifier = "release"
-    //后缀名
     extension = "jar"
-    //最终的 Jar 包名，如果没设置，默认为 [baseName]-[appendix]-[version]-[classifier].[extension]
-    archiveName = "moduleAApi.jar"
+    archiveName = "liba-export-api.jar"
     //需打包的资源所在的路径集
     def srcClassDir = [project.buildDir.absolutePath + "/moduleApiExport"]
     //初始化资源路径集
     from srcClassDir
-    //去除路径集下部分的资源
-    //    exclude "okhttphelper/clz/com/okhttphelper/BuildConfig.class"
-//    include "ExportAPlugin.class"
 }
 
 android {

@@ -118,7 +118,8 @@ class ExportTransform extends Transform {
         CtClass tempCls = mClassPool.get(className)
         def hasExport = tempCls.hasAnnotation("com.youzan.mobile.lib_common.annotation.Export")
         if (hasExport) {
-            File toDir = new File(mProject.buildDir.absolutePath, "moduleApiExport")
+            mProject.logger.error("exportClassPath:" + reader.className)
+            File toDir = new File(mProject.buildDir.absolutePath, "moduleApiExport/${reader.className.substring(0, reader.className.lastIndexOf("/"))}")
             if (!toDir.exists()) {
                 toDir.mkdir()
             }
