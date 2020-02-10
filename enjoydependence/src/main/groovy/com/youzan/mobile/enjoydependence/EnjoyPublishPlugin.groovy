@@ -88,7 +88,7 @@ class EnjoyPublishPlugin implements Plugin<Project> {
                     publications {
                         def android = project.extensions.getByType(LibraryExtension)
                         "moduleExport"(MavenPublication) {
-                            artifact "${project.buildDir}/libs/liba-export-api.jar"
+                            artifact "${project.buildDir}/libs/${project.name}-export-api.jar"
                             groupId publishExt.groupId
                             artifactId tempArtifactId + "-module-api"
                             version defaultVersion
