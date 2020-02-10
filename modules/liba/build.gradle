@@ -24,31 +24,6 @@ if (project.tasks['sourcesJar']) {
     }
 }
 
-//用于发布export包
-//publishing {
-//    repositories {
-//        mavenLocal()
-//    }
-//
-//    publications {
-//        maven(MavenPublication) {
-//            artifact "${project.buildDir}/libs/liba-export-api.jar"
-//            groupId "com.youzan.mobile"
-//            artifactId "liba-module-api"
-//            version "1.0.1-SNAPSHOT"
-//        }
-//    }
-//}
-
-task makeJar(type: Jar) {
-    extension = "jar"
-    archiveName = "liba-export-api.jar"
-    //需打包的资源所在的路径集
-    def srcClassDir = [project.buildDir.absolutePath + "/moduleApiExport"]
-    //初始化资源路径集
-    from srcClassDir
-}
-
 android {
     compileSdkVersion rootProject.ext.android.compileSdkVersion
     buildToolsVersion rootProject.ext.android.buildToolsVersion
@@ -60,7 +35,6 @@ android {
         versionName rootProject.ext.android.versionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
