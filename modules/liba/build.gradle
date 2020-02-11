@@ -65,7 +65,7 @@ mavenPublish {
     versionP.load(versionPStream)
 
 //    flavor = "pad"
-    localPublish = true
+    localPublish = false
     version = versionP.getProperty("versionName") // 如果不包含SNAPSHOT，则发布到release的仓库
     groupId = properties.getProperty("sdk_groupId")
     artifactId = properties.getProperty("sdk_artifactId")
