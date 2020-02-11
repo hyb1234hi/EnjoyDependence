@@ -124,6 +124,9 @@ class MediatorRegisterTransform extends Transform {
         def reader = new ClassReader(inputStream)
         def className = reader.className.replace('/', '.')
         CtClass tempCls = mClassPool.get(className)
+        if (tempCls == null) {
+            return
+        }
         CtClass[] interfaces = tempCls.interfaces
         def isTarget = false
         for (CtClass ctClass : interfaces) {

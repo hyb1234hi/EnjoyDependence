@@ -28,6 +28,8 @@ class AnnotationHandlerPlugin implements Plugin<Project> {
             MavenPublishExt publishExt = project.getExtensions().findByType(MavenPublishExt.class)
             if (publishExt.localPublish) {
                 project.getTasks().create("makeJar", MakeJarTask).dependsOn(["assembleDebug"]).finalizedBy(["publishModuleExportPublicationToMavenLocal"])
+            } else {
+                project.getTasks().create("makeJar", MakeJarTask).dependsOn(["assembleDebug"]).finalizedBy(["publishModuleExportPublicationToMavenRepository"])
             }
         }
     }

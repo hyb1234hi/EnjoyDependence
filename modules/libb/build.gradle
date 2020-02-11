@@ -27,7 +27,7 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
     compileOnly project(path: ':modules:lib_common')
-    compileOnly 'com.youzan.mobile:liba-module-api:1.0.1-SNAPSHOT'
+    compileOnly 'com.youzan.mobile:liba-module-api:1.0.3-SNAPSHOT'
 }
 
 def localPublishSwitch = true
