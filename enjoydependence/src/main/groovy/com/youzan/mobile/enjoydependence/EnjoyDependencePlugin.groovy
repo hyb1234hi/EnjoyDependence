@@ -26,8 +26,8 @@ class EnjoyDependencePlugin implements Plugin<Project> {
             it.plugins.apply(AutoPublishPlugin)
             it.plugins.apply(AutoPublishAllPlugin)
             it.plugins.apply(AutoGitPlugin)
-            it.plugins.apply(AAPT1PublicPlugin)
-            it.plugins.apply(AAPT2PublicPlugin)
+//            it.plugins.apply(AAPT1PublicPlugin)
+//            it.plugins.apply(AAPT2PublicPlugin)
             it.plugins.apply(AnnotationHandlerPlugin)
         }
     }

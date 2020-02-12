@@ -32,9 +32,6 @@ android {
         targetSdkVersion rootProject.ext.android.targetSdkVersion
         versionCode rootProject.ext.android.versionCode
         versionName rootProject.ext.android.versionName
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
@@ -48,11 +45,6 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    testImplementation 'junit:junit:4.12'
-    implementation 'androidx.appcompat:appcompat:1.1.0'
 }
 
 def localPublishSwitch = true
@@ -70,10 +62,10 @@ mavenPublish {
     version = versionP.getProperty("versionName") // 如果不包含SNAPSHOT，则发布到release的仓库
     groupId = properties.getProperty("sdk_groupId")
     artifactId = properties.getProperty("sdk_artifactId")
-    userName="mobile"
-    password="BlRlkE9W"
-    snapshotRepo="http://maven.qima-inc.com/content/repositories/snapshots/"
-    releaseRepo="http://maven.qima-inc.com/content/repositories/releases/"
+    userName = "mobile"
+    password = "BlRlkE9W"
+    snapshotRepo = "http://maven.qima-inc.com/content/repositories/snapshots/"
+    releaseRepo = "http://maven.qima-inc.com/content/repositories/releases/"
 }
 
 autoPublish {

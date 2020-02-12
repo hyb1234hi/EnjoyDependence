@@ -1,9 +1,7 @@
 package com.youzan.mobile.enjoydependency;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-
+import android.support.v7.app.AppCompatActivity;
 import com.youzan.mobile.liba.ARouter;
 import com.youzan.mobile.libb.BRouter;
 
