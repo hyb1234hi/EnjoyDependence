@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/fragment1_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textSize="24dp"
+        android:text="通信窗口"
+        android:layout_marginTop="40dp"/>
+
+    <Button
+        android:id="@+id/fragment1_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="向Fragment2发送通知"
+        android:textSize="28dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"/>
+
+</LinearLayout>

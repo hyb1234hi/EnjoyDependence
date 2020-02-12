@@ -40,7 +40,7 @@ object FunctionManager {
         return this
     }
 
-    public fun addFuntion(function: FunctionNoParamAndResult?): FunctionManager {
+    public fun addFunction(function: FunctionNoParamAndResult?): FunctionManager {
         function ?: return this
         mFunctionNoParamAndResult[function.mFunctionName] = function
         return this

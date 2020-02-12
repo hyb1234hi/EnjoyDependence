@@ -18,10 +18,14 @@ class AnnotationHandlerPlugin implements Plugin<Project> {
                 return
             }
 
+            if (project.name == "libc") {
+                return
+            }
+
             libExtension.registerTransform(new MediatorRegisterTransform(project))
             libExtension.registerTransform(new ExportTransform(project))
 
-            if (project.name == "app" || project.name == "modules" || project.name == "enjoydependence") {
+            if (project.name == "app" || project.name == "modules" || project.name == "enjoydependence" || project.name == "libc") {
                 return
             }
 
