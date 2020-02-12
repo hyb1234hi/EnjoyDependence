@@ -114,6 +114,9 @@ class AutoMerge extends DefaultTask {
                                 }
                                 request.headers['PRIVATE-TOKEN'] = "${autoGitExt.token}"
                             }.put {
+                                request.body = [
+                                        'should_remove_source_branch': "true"
+                                ]
                                 response.success {
                                     println("-----------------auto accept mr success----------------")
                                 }
