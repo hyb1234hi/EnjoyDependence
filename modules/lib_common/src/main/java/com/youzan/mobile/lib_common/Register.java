@@ -1,5 +1,7 @@
 package com.youzan.mobile.lib_common;
 
+import com.youzan.mobile.lib_common.baseInterface.IPlugin;
+
 import java.util.HashMap;
 
 public class Register {

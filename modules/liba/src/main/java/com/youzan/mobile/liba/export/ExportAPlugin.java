@@ -1,6 +1,6 @@
 package com.youzan.mobile.liba.export;
 
-import com.youzan.mobile.lib_common.IPlugin;
+import com.youzan.mobile.lib_common.baseInterface.IPlugin;
 import com.youzan.mobile.lib_common.annotation.Export;
 
 /**

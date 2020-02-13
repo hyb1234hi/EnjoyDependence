@@ -127,10 +127,11 @@ class MediatorRegisterTransform extends Transform {
         if (tempCls == null) {
             return
         }
-        CtClass[] interfaces = tempCls.interfaces
+
+        String[] interfaces = tempCls.classFile.interfaces
         def isTarget = false
-        for (CtClass ctClass : interfaces) {
-            if (ctClass.name.contains("IApplication")) {
+        for (String ctInterfaceName : interfaces) {
+            if (ctInterfaceName.contains("IApplication")) {
                 isTarget = true
             }
         }
@@ -170,6 +171,7 @@ class MediatorRegisterTransform extends Transform {
                     for (Annotation ann : aatt.getAnnotations()) {
                         if (ann.typeName.contains("MediatorRegister")) {
                             mediatorRegister = ann
+                            mProject.logger.error("get MediatorRegister annotation")
                             break
                         }
                     }
@@ -179,6 +181,7 @@ class MediatorRegisterTransform extends Transform {
             def pluginName = null
             if (mediatorRegister != null) {
                 pluginName = ((StringMemberValue) mediatorRegister.getMemberValue("pluginName")).getValue()
+                mProject.logger.error("pluginName is ${pluginName}")
             }
 
             if (pluginName != null) {

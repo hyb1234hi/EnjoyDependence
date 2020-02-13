@@ -1,4 +1,4 @@
-package com.youzan.mobile.lib_common;
+package com.youzan.mobile.lib_common.baseInterface;
 
 /**
  * 模块api基类

@@ -31,6 +31,34 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation project(path: ":modules:lib_common")
 }
-repositories {
-    mavenCentral()
+
+def localPublishSwitch = true
+
+mavenPublish {
+    Properties properties = new Properties()
+    InputStream inputStream = project.file('local.properties').newDataInputStream()
+    properties.load(inputStream)
+
+    Properties versionP = new Properties()
+    InputStream versionPStream = project.file('version.properties').newDataInputStream()
+    versionP.load(versionPStream)
+
+//    flavor = "pad"
+    localPublish = true
+    version = versionP.getProperty("versionName") // 如果不包含SNAPSHOT，则发布到release的仓库
+    groupId = properties.getProperty("sdk_groupId")
+    artifactId = properties.getProperty("sdk_artifactId")
+    userName = "mobile"
+    password = "BlRlkE9W"
+    snapshotRepo = "http://maven.qima-inc.com/content/repositories/snapshots/"
+}
+
+autoPublish {
+    if (localPublishSwitch) {
+        padDependOn = "publishMavenDebugAarPublicationToMavenLocalRepository"
+        phoneDependOn = "publishMavenDebugAarPublicationToMavenLocalRepository"
+    } else {
+        padDependOn = "publishMavenDebugAarPublicationToMavenRepository"
+        phoneDependOn = "publishMavenDebugAarPublicationToMavenRepository"
+    }
 }

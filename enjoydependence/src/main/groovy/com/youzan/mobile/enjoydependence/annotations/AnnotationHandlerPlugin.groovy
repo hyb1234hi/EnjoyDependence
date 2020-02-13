@@ -13,21 +13,17 @@ class AnnotationHandlerPlugin implements Plugin<Project> {
     @Override
     void apply(Project project) {
         project.afterEvaluate {
+            if (project.name == "app" || project.name == "modules" || project.name == "enjoydependence") {
+                return
+            }
+
             def libExtension = project.extensions.findByType(LibraryExtension)
             if (!libExtension) {
                 return
             }
 
-            if (project.name == "libc") {
-                return
-            }
-
             libExtension.registerTransform(new MediatorRegisterTransform(project))
             libExtension.registerTransform(new ExportTransform(project))
-
-            if (project.name == "app" || project.name == "modules" || project.name == "enjoydependence" || project.name == "libc") {
-                return
-            }
 
             MavenPublishExt publishExt = project.getExtensions().findByType(MavenPublishExt.class)
             if (publishExt.localPublish) {

@@ -3,9 +3,6 @@ package com.youzan.mobile.enjoydependency;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.FrameLayout;
-
-import com.youzan.mobile.liba.ARouter;
-import com.youzan.mobile.libb.BRouter;
 import com.youzan.mobile.libc.fragment.Fragment1;
 import com.youzan.mobile.libc.fragment.Fragment2;
 
@@ -18,8 +15,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ARouter.gotoA();
-        BRouter.gotoB();
 
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.container1, Fragment1.Companion.getFragment1())
