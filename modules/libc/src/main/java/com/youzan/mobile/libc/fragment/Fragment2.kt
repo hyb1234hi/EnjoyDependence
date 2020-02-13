@@ -8,10 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.youzan.mobile.libc.R
-import com.youzan.mobile.libc.function.FunctionNoParamAndResult
-import com.youzan.mobile.libc.function.FunctionWithParam
-import com.youzan.mobile.libc.function.FunctionWithParamAndResult
-import com.youzan.mobile.libc.function.FunctionWithResult
+import com.youzan.mobile.libc.function.*
 import com.youzan.mobile.libc.manager.FunctionManager
 import kotlinx.android.synthetic.main.fragment2_layout.view.*
 
@@ -57,13 +54,21 @@ class Fragment2 : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         rootView = inflater.inflate(R.layout.fragment2_layout, null)
-        rootView.fragment2_send.setOnClickListener {
-            sendMsgToF1()
+        rootView.fragment2_send_result_param.setOnClickListener {
+            val param = FunctionParam.FunctionParamBuilder()
+                    .putInt(1)
+                    .putBoolean(true)
+                    .putString("这个世界真美")
+                    .creat()
+            val result = FunctionManager.invokeFuncWithParamAndResult<String, FunctionParam>(Fragment1.F1SAYWITHRESULTANDPARAM, param, String::class.java)
+                    ?: ""
+            rootView.fragment2_content.text = "来自F1的反馈：$result"
+        }
+        rootView.fragment2_send_result.setOnClickListener {
+            val result = FunctionManager.invokeFuncWithResult<String>(Fragment1.F1SAYWITHRESULT, String::class.java)
+                    ?: ""
+            rootView.fragment2_content.text = "来自F1的反馈：$result"
         }
         return rootView
-    }
-
-    private fun sendMsgToF1() {
-
     }
 }

@@ -1,24 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/fragment2_content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:textSize="24dp"
-        android:text="通信窗口"
-        android:layout_marginTop="40dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/fragment_msg_bg"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/fragment2_send"
-        android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="message"
+            android:textSize="24dp" />
+
+        <TextView
+            android:id="@+id/fragment2_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="来自于远方的消息"
+            android:textSize="18dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="向Fragment2发送通知"
-        android:textSize="28dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"/>
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <Button
+            android:id="@+id/fragment2_send_result"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_bg"
+            android:layout_weight="1"
+            android:layout_marginLeft="5dp"
+            android:text="r()" />
+
+        <Button
+            android:id="@+id/fragment2_send_result_param"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_bg"
+            android:layout_weight="1"
+            android:layout_marginLeft="5dp"
+            android:text="r(param)" />
+    </LinearLayout>
 
 </LinearLayout>

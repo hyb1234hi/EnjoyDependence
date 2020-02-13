@@ -33,7 +33,7 @@ dependencies {
     implementation project(path: ':modules:liba')
     implementation project(path: ':modules:libb')
     implementation project(path: ':modules:libc')
-    implementation project(path: ':modules:lib_common')
+    implementation project(path: ':base:lib_common')
 }
 
 autoPublishAll {

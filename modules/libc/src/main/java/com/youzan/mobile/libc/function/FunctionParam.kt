@@ -25,7 +25,7 @@ public class FunctionParam(private val bundle: Bundle, private val map: MutableM
         return map[paramIndex++.toString()]?.let { return@let type.cast(it) }
     }
 
-    public inner class FunctionParamBuilder {
+    public class FunctionParamBuilder {
         private val bundle: Bundle by lazy {
             Bundle()
         }

@@ -8,9 +8,6 @@ import com.youzan.mobile.libc.fragment.Fragment2;
 
 public class MainActivity extends AppCompatActivity {
 
-    FrameLayout container1;
-    FrameLayout container2;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
