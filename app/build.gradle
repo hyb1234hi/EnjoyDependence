@@ -19,7 +19,7 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = [AROUTER_MODULE_NAME: project.getName()]
+                arguments = [AROUTER_MODULE_NAME: project.getName(), AROUTER_GENERATE_DOC: "enable"]
             }
         }
     }
@@ -36,7 +36,7 @@ dependencies {
     implementation "com.android.support:appcompat-v7:$config.appcompatV7Version"
     implementation "com.android.support:support-v4:$config.supportV4Version"
     compile "com.alibaba:arouter-api:$config.arouterVersion"
-    annotationProcessor "com.alibaba:arouter-compiler:$config.arouterVersion" //注解处理器，会将注解编译成Java类
+    annotationProcessor "com.alibaba:arouter-compiler:1.2.2" //注解处理器，会将注解编译成Java类
 
     implementation project(path: ':modules:liba')
     implementation project(path: ':modules:libb')

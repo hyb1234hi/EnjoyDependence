@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 def config = rootProject.ext.android
 
@@ -36,7 +37,7 @@ dependencies {
     implementation "com.android.support:support-v4:$config.supportV4Version"
     implementation "com.alibaba:arouter-api:$config.arouterVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    annotationProcessor "com.alibaba:arouter-compiler:$config.arouterVersion" //注解处理器，会将注解编译成Java类
+    kapt "com.alibaba:arouter-compiler:1.2.2" //注解处理器，会将注解编译成Java类
 
     implementation project(path: ":base:lib_common")
 }
