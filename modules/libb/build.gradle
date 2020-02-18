@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
 //apply from: '../../dynamic.gradle'
 
+def config = rootProject.ext.android
+
 android {
     compileSdkVersion rootProject.ext.android.compileSdkVersion
     buildToolsVersion rootProject.ext.android.buildToolsVersion
@@ -11,7 +13,11 @@ android {
         versionCode rootProject.ext.android.versionCode
         versionName rootProject.ext.android.versionName
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName()]
+            }
+        }
     }
 
     buildTypes {
@@ -24,9 +30,14 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "com.android.support:appcompat-v7:$config.appcompatV7Version"
+    implementation "com.android.support:support-v4:$config.supportV4Version"
+    implementation "com.alibaba:arouter-api:$config.arouterVersion"
+    annotationProcessor "com.alibaba:arouter-compiler:1.2.2" //注解处理器，会将注解编译成Java类
 
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    compileOnly project(path: ':modules:lib_common')
+    compileOnly project(path: ':base:lib_common')
+    compileOnly 'com.youzan.mobile:liba-module-api:1.0.4-SNAPSHOT'
+    compileOnly 'com.youzan.mobile:libc-module-api:1.0.0-SNAPSHOT'
 }
 
 def localPublishSwitch = true
@@ -44,9 +55,9 @@ mavenPublish {
 //    version = versionP.getProperty("versionName") // 如果不包含SNAPSHOT，则发布到release的仓库
     groupId = properties.getProperty("sdk_groupId")
     artifactId = properties.getProperty("sdk_artifactId")
-    userName="mobile"
-    password="BlRlkE9W"
-    snapshotRepo="http://maven.qima-inc.com/content/repositories/snapshots/"
+    userName = "mobile"
+    password = "BlRlkE9W"
+    snapshotRepo = "http://maven.qima-inc.com/content/repositories/snapshots/"
 }
 
 autoPublish {

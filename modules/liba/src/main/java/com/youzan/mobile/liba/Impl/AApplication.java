@@ -1,11 +1,12 @@
 package com.youzan.mobile.liba.Impl;
 
-import com.youzan.mobile.lib_common.IApplication;
-import com.youzan.mobile.lib_common.Register;
+import com.youzan.mobile.lib_common.baseInterface.IApplication;
 
+/**
+ * liba为b提高部分服务，为java demo
+ */
 public class AApplication implements IApplication {
     @Override
-    public void onCreat() {
-        Register.register.regis("aPlugin", new APlugin());
+    public void onCreate() {
     }
 }

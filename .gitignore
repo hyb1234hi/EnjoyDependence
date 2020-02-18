@@ -15,4 +15,7 @@
 .idea/
 enjoy.json
 .publish/
+/backup
+public.txt
+public.xml
 /.idea

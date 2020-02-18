@@ -2,12 +2,15 @@ import groovy.json.JsonSlurper
 
 ext {
     android = [
-            compileSdkVersion: 29,
-            buildToolsVersion: "29.0.2",
-            minSdkVersion    : 22,
-            targetSdkVersion : 29,
-            versionCode      : 1,
-            versionName      : "1.0"
+            compileSdkVersion : 28,
+            buildToolsVersion : "28.0.3",
+            minSdkVersion     : 22,
+            targetSdkVersion  : 28,
+            versionCode       : 1,
+            versionName       : "1.0",
+            supportV4Version  : "28.0.0",
+            appcompatV7Version: "28.0.0",
+            arouterVersion    : "1.5.0"
     ]
 
     //获取当前分支
@@ -25,9 +28,9 @@ ext {
         def jsonArray = new JsonSlurper().parse(enjoyJson)
         jsonArray.each {
             def branch = it["branch"]
-            def moduleInfo  = it["modules"]
+            def moduleInfo = it["modules"]
             def currentBranch = getCurrentBranch()
-            if ("${currentBranch}".contains("$branch") ) {
+            if ("${currentBranch}".contains("$branch")) {
                 moduleInfo.each {
                     chooseMap.put(it.name, it.choose)
                 }

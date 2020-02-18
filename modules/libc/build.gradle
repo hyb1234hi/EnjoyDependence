@@ -1,0 +1,74 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+
+def config = rootProject.ext.android
+
+android {
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode rootProject.ext.android.versionCode
+        versionName rootProject.ext.android.versionName
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName()]
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "com.android.support:appcompat-v7:$config.appcompatV7Version"
+    implementation "com.android.support:support-v4:$config.supportV4Version"
+    implementation "com.alibaba:arouter-api:$config.arouterVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    kapt "com.alibaba:arouter-compiler:1.2.2" //注解处理器，会将注解编译成Java类
+
+    implementation project(path: ":base:lib_common")
+}
+
+def localPublishSwitch = true
+
+mavenPublish {
+    Properties properties = new Properties()
+    InputStream inputStream = project.file('local.properties').newDataInputStream()
+    properties.load(inputStream)
+
+    Properties versionP = new Properties()
+    InputStream versionPStream = project.file('version.properties').newDataInputStream()
+    versionP.load(versionPStream)
+
+//    flavor = "pad"
+    localPublish = true
+    version = versionP.getProperty("versionName") // 如果不包含SNAPSHOT，则发布到release的仓库
+    groupId = properties.getProperty("sdk_groupId")
+    artifactId = properties.getProperty("sdk_artifactId")
+    userName = "mobile"
+    password = "BlRlkE9W"
+    snapshotRepo = "http://maven.qima-inc.com/content/repositories/snapshots/"
+}
+
+autoPublish {
+    if (localPublishSwitch) {
+        padDependOn = "publishMavenDebugAarPublicationToMavenLocalRepository"
+        phoneDependOn = "publishMavenDebugAarPublicationToMavenLocalRepository"
+    } else {
+        padDependOn = "publishMavenDebugAarPublicationToMavenRepository"
+        phoneDependOn = "publishMavenDebugAarPublicationToMavenRepository"
+    }
+}

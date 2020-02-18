@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
 //apply from: '../../dynamic.gradle'
 
+def config = rootProject.ext.android
+
 if (project.plugins.hasPlugin("com.android.library")) {
     task sourcesJar(type: Jar) {
         classifier = 'sources'
@@ -34,8 +36,11 @@ android {
         versionCode rootProject.ext.android.versionCode
         versionName rootProject.ext.android.versionName
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName()]
+            }
+        }
     }
 
     buildTypes {
@@ -49,9 +54,12 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "com.android.support:appcompat-v7:$config.appcompatV7Version"
+    implementation "com.android.support:support-v4:$config.supportV4Version"
+    implementation "com.alibaba:arouter-api:$config.arouterVersion"
+    annotationProcessor "com.alibaba:arouter-compiler:1.2.2" //注解处理器，会将注解编译成Java类
 
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation project(path: ':modules:lib_common')
+    implementation project(path: ':base:lib_common')
 }
 
 def localPublishSwitch = true
@@ -70,9 +78,9 @@ mavenPublish {
     version = versionP.getProperty("versionName") // 如果不包含SNAPSHOT，则发布到release的仓库
     groupId = properties.getProperty("sdk_groupId")
     artifactId = properties.getProperty("sdk_artifactId")
-    userName="mobile"
-    password="BlRlkE9W"
-    snapshotRepo="http://maven.qima-inc.com/content/repositories/snapshots/"
+    userName = "mobile"
+    password = "BlRlkE9W"
+    snapshotRepo = "http://maven.qima-inc.com/content/repositories/snapshots/"
 }
 
 autoPublish {

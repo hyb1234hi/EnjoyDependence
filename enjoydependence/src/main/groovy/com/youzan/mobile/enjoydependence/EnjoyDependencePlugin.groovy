@@ -1,5 +1,9 @@
 package com.youzan.mobile.enjoydependence
 
+import com.youzan.mobile.enjoydependence.aapt.AAPT1PublicPlugin
+import com.youzan.mobile.enjoydependence.aapt.AAPT2PublicPlugin
+import com.youzan.mobile.enjoydependence.annotations.AnnotationHandlerPlugin
+
 import com.youzan.mobile.enjoydependence.auto.all.AutoPublishAllPlugin
 import com.youzan.mobile.enjoydependence.auto.AutoPublishPlugin
 import com.youzan.mobile.enjoydependence.autoGit.AutoGitPlugin
@@ -22,6 +26,9 @@ class EnjoyDependencePlugin implements Plugin<Project> {
             it.plugins.apply(AutoPublishPlugin)
             it.plugins.apply(AutoPublishAllPlugin)
             it.plugins.apply(AutoGitPlugin)
+//            it.plugins.apply(AAPT1PublicPlugin)
+//            it.plugins.apply(AAPT2PublicPlugin)
+            it.plugins.apply(AnnotationHandlerPlugin)
         }
     }
 }
