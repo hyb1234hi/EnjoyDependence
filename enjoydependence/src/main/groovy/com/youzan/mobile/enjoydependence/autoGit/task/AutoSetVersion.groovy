@@ -39,19 +39,28 @@ class AutoSetVersion extends DefaultTask {
         }
 
         //新的文本，更改老文件中的version的相关信息
+        def fixVersionCode = true
         List<String> newContent = new ArrayList<>()
         buildGradle.withReader("UTF-8") { reader ->
             reader.eachLine {
                 if (it.contains("versionName getVerName")) {
                     //获取到版本号那一行
                     newContent.add("            versionName getVerName(\"${version}\")")
-                } else if (it.contains("versionCode")) {
-                    String[] temp = it.split(" ")
-                    println(temp.toString())
-                    if (temp.size() >= 2) {
-                        versionCode = temp[temp.length - 1].toInteger() + 1
+                    //如果当前版本号和传入版本号一致，则不修改versionCode
+                    if (it.contains("${version}")) {
+                        fixVersionCode = false
                     }
-                    newContent.add("            versionCode ${versionCode}")
+                } else if (it.contains("versionCode")) {
+                    if (fixVersionCode) {
+                        String[] temp = it.split(" ")
+                        println(temp.toString())
+                        if (temp.size() >= 2) {
+                            versionCode = temp[temp.length - 1].toInteger() + 1
+                        }
+                        newContent.add("            versionCode ${versionCode}")
+                    } else {
+                        newContent.add(it)
+                    }
                 } else if (it.contains("version =")) {
                     newContent.add("    version = \"${version}\"")
                 } else {
