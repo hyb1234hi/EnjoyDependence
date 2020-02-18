@@ -106,6 +106,10 @@ class AutoMerge extends DefaultTask {
                             }
                         } else {
                             println("-----------------auto accept mr----------------")
+                            def shouldRemoveSourceBranch = false
+                            if (source_branch == "feature/mbd_backup_branch"){
+                                shouldRemoveSourceBranch = true
+                            }
                             HttpBuilder.configure {
                                 request.uri = "http://gitlab.qima-inc.com/api/v4/projects/${autoGitExt.projectId}/merge_requests/${body.iid}/merge"
                                 request.contentType = JSON[0]
@@ -115,7 +119,7 @@ class AutoMerge extends DefaultTask {
                                 request.headers['PRIVATE-TOKEN'] = "${autoGitExt.token}"
                             }.put {
                                 request.body = [
-                                        'should_remove_source_branch': "true"
+                                        'should_remove_source_branch': shouldRemoveSourceBranch
                                 ]
                                 response.success {
                                     println("-----------------auto accept mr success----------------")
