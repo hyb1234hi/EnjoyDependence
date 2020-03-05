@@ -1,5 +1,6 @@
 package com.youzan.mobile.enjoydependence.auto
 
+import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
 class LIFManager {
@@ -14,7 +15,6 @@ class LIFManager {
         if (lifFile.exists()) {
             lastInfoFile = new JsonSlurper().parse(lifFile)
         }
-
     }
 
     static LIFManager getInstance(String lifPath) {
@@ -41,10 +41,33 @@ class LIFManager {
         return ""
     }
 
-    String loadBLV() {
+    String loadLBV() {
         if (lastInfoFile != null) {
             return lastInfoFile.lbv
         }
         return ""
+    }
+
+    void setGLCId(String glc) {
+        if (glc != null && glc != "") {
+            lastInfoFile.glc = glc
+        }
+    }
+
+    void setLBV(String lbv) {
+        if (lbv != null && lbv != null) {
+            lastInfoFile.lbv = lbv
+        }
+    }
+
+    String writeIntoLIF() {
+        def json = JsonOutput.toJson(lastInfoFile)
+        File file = new File(lifPath)
+        if (!file.exists()) {
+            file.createNewFile()
+        }
+
+        file.text = json
+        return json
     }
 }

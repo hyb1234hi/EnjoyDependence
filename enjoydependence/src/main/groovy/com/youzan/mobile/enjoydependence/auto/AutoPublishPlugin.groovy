@@ -28,6 +28,8 @@ class AutoPublishPlugin implements Plugin<Project> {
         project.afterEvaluate {
             if (project.name == "app") {
                 project.getTasks().create("loadLif", LoadLifTask.class)
+                project.getTasks().create("updateLif", UpdateLifTask.class)
+                project.getTasks().create("loadLifByType", LoadLifByTypeTask.class)
                 return
             }
 
