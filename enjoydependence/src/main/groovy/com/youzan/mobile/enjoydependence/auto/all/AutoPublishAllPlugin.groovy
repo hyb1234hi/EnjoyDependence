@@ -1,5 +1,6 @@
 package com.youzan.mobile.enjoydependence.auto.all
 
+import com.youzan.mobile.enjoydependence.auto.LIFManager
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -21,6 +22,12 @@ class AutoPublishAllPlugin implements Plugin<Project> {
         }
         AutoPublishAllExt autoPublishAllExt = project.extensions.create("autoPublishAll", AutoPublishAllExt)
         project.afterEvaluate {
+            LIFManager.clearInstance()
+            if (autoPublishAllExt.glcParentPath != null) {
+                File glcFile = new File(autoPublishAllExt.glcParentPath + "/" + ".lif")
+                LIFManager.getInstance(glcFile.getAbsolutePath())
+            }
+
             if (autoPublishAllExt.padCommand != "") {
                 project.getTasks().create("AutoPublishPadAll", AutoPublishPadAllTask.class).doFirst {
                     println("-------------------start publish pad all--------------------")

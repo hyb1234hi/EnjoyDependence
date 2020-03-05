@@ -19,13 +19,18 @@ class AutoPublishPlugin implements Plugin<Project> {
     @Override
     void apply(Project project) {
 
-        if (project.name == "app" || project.name == "modules" || project.name == "enjoydependence") {
+        if (project.name == "modules" || project.name == "enjoydependence") {
             return
         }
 
         AutoPublishExt autoPublishExt = project.extensions.create("autoPublish", AutoPublishExt)
 
         project.afterEvaluate {
+            if (project.name == "app") {
+                project.getTasks().create("loadLif", LoadLifTask.class)
+                return
+            }
+
             //自动发布pad
             if (project.getTasks().find {
                 autoPublishExt.padDependOn

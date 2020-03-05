@@ -1,5 +1,6 @@
 package com.youzan.mobile.enjoydependence.auto.all
 
+import com.youzan.mobile.enjoydependence.auto.LIFManager
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
@@ -138,25 +139,14 @@ class AutoPublishPhoneAllTask extends DefaultTask {
 
     //获取本次提交记录
     def gitDiffLog() {
-        try {
-            File glcFile = new File(autoPublishAllExt.glcParentPath + "/" + ".glc")
-//git最后一次提交sort id记录文件
-            if (glcFile.exists()) {
-                glcFile.withReader('UTF-8') { reader ->
-                    def lastCommitId = reader.text.trim()
-                    println("---------------lastCommitId: ${lastCommitId}----------------")
-                    if (lastCommitId == "") {
-                        return ""
-                    } else {
-                        return "git diff --name-only ${lastCommitId}".execute().text.trim()
-                    }
-                }
-            } else {
-                println("---------------glcPath: ${glcFile.absolutePath}----------------")
-                return ""
-            }
-        } catch (ignored) {
+        File glcFile = new File(autoPublishAllExt.glcParentPath + "/" + ".glc")
+        LIFManager lifManager = LIFManager.getInstance(glcFile.getAbsolutePath())
+        def lastCommitId = lifManager.loadGLCId()
+        println("---------------lastCommitId: ${lastCommitId}----------------")
+        if (lastCommitId == "" || lastCommitId == null) {
             return ""
+        } else {
+            return "git diff --name-only ${lastCommitId}".execute().text.trim()
         }
     }
 
