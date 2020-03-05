@@ -7,7 +7,7 @@ import com.youzan.mobile.lib_common.Register;
 
 public class ARouter {
     public static void gotoA(){
-        Log.d("hello", "测试diff");
+        Log.d("hello", "测试diff1");
         LibBPlugin bPlugin = (LibBPlugin) Register.register.getPlugin("bPlugin");
         bPlugin.say();
     }
