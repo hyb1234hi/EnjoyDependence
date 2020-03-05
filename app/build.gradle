@@ -37,8 +37,8 @@ dependencies {
 
 autoPublishAll {
     phoneCommand = "AutoPublishPad"
-    firstPriority = ["lib_common"]
-    excludeModules = ["app", "enjoydependence", "modules"]
+    firstPriority = [""]
+    excludeModules = ["app", "enjoydependence", "modules", "common"]
     glcParentPath = project.rootProject.projectDir.absolutePath
 }
 
