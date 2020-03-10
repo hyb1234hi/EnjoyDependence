@@ -44,7 +44,6 @@ class AutoGitUtils {
             }
             response.exception { t ->
                 println("-----------------send message error: ${t.getMessage()}----------------")
-                throw new RuntimeException(t)
             }
         }
     }
