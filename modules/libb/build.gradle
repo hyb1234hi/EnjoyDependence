@@ -35,7 +35,7 @@ dependencies {
     implementation "com.alibaba:arouter-api:$config.arouterVersion"
     annotationProcessor "com.alibaba:arouter-compiler:1.2.2" //注解处理器，会将注解编译成Java类
 
-    compileOnly project(path: ':base:lib_common')
+    compileOnly project(path: ':modules:lib_common')
     compileOnly 'com.youzan.mobile:liba-module-api:1.0.4-SNAPSHOT'
     compileOnly 'com.youzan.mobile:libc-module-api:1.0.0-SNAPSHOT'
 }

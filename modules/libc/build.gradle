@@ -39,7 +39,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     kapt "com.alibaba:arouter-compiler:1.2.2" //注解处理器，会将注解编译成Java类
 
-    implementation project(path: ":base:lib_common")
+    implementation project(path: ":modules:lib_common")
 }
 
 def localPublishSwitch = true
